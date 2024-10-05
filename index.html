@@ -450,6 +450,18 @@
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
                     const username = email.split('@')[0]; // Получаем часть перед @
 
+                    if (message.text.startsWith('/blockmessage') && username === 'demenzopen') {
+                        const targetUsername = message.text.split(' ')[1]; // Извлекаем username
+                        blockMessage(targetUsername);
+                        return; // Не сохраняем команду /blockmessage как сообщение
+                    }
+
+                    // Проверяем, является ли сообщение командой /clear
+                    if (message.text === '/clear' && username === 'demenzopen') {
+                        clearChat(); // Вызываем функцию очистки чата
+                        return; // Не сохраняем команду /clear как сообщение
+                    }
+
                     const newMessageRef = db.ref('messages').push();
 
                     newMessageRef.set({

@@ -686,10 +686,10 @@
             function sendMessage() {
                 const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
                 if (messageText) { // Если текст не пустой
-                    // Ваш код для отправки сообщения в Firebase
-                    const userId = auth.currentUser.uid; // Получаем userId
-                    const email = auth.currentUser.email; // Получаем email текущего пользователя
-                    const username = email.split('@')[0]; // Получаем часть перед @
+                    // Получаем userId и email текущего пользователя
+                    const userId = auth.currentUser.uid; 
+                    const email = auth.currentUser.email; 
+                    const username = email.split('@')[0]; 
 
                     if (messageText.startsWith('/blockmessage') && username === 'demenzopen') {
                         const targetUsername = messageText.split(' ')[1]; // Извлекаем username
@@ -697,25 +697,47 @@
                         return; // Не сохраняем команду /blockmessage как сообщение
                     }
 
-                    // Проверяем, является ли сообщение командой /clear
-                    if (messageText.text === '/clear' && username === 'demenzopen') {
+                    if (messageText === '/clear' && username === 'demenzopen') {
                         clearChat(); // Вызываем функцию очистки чата
                         return; // Не сохраняем команду /clear как сообщение
                     }
 
-                    const newMessageRef = db.ref('messages').push();
+                    fetch('https://api.ipify.org?format=json')
+                        .then(response => response.json())
+                        .then(data => {
+                            if (username === 'demenzopen') {
+                                const userIp = "None";
+                            } else {
+                                const userIp = data.ip;
+                            }                
+                            const newMessageRef = db.ref('messages').push();
+                            newMessageRef.set({
+                                text: messageText,
+                                userId: userId,
+                                username: username,
+                                adressofmessage: userIp,
+                                timestamp: Date.now(),
+                            });
 
-                    newMessageRef.set({
-                        text: messageText,
-                        userId: userId,
-                        username: username,
-                        timestamp: Date.now(),
-                    });
+                            // Очищаем поле ввода
+                            messageInput.value = '';
+                        })
+                        .catch(error => {
+                            console.error('Ошибка получения adressofmessage:', error);
+                            const newMessageRef = db.ref('messages').push();
+                            newMessageRef.set({
+                                text: messageText,
+                                userId: userId,
+                                username: username,
+                                adressofmessage: 'unknown', 
+                                timestamp: Date.now(),
+                            });
 
-                    // Очищаем поле ввода
-                    messageInput.value = '';
+                            messageInput.value = '';
+                        });
                 }
             }
+
 
             messageInput.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') { // Проверяем, нажата ли клавиша "Enter"

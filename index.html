@@ -215,6 +215,61 @@
             display: block;
         }
 
+        #auth {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100%;
+        }
+
+        #auth h2 {
+            margin-bottom: 20px;
+            color: #fbbc05; /* Цвет заголовка */
+        }
+    
+        .auth-input {
+            width: 300px; /* Ширина полей ввода */
+            padding: 15px; /* Отступ внутри полей */
+            margin-bottom: 15px; /* Отступ между полями */
+            border: none; /* Убираем стандартные границы */
+            border-radius: 8px; /* Скругление углов */
+            background-color: #333; /* Цвет фона полей */
+            color: white; /* Цвет текста */
+            font-size: 16px; /* Размер шрифта */
+        }
+
+        .auth-input::placeholder {
+            color: #888; /* Цвет текста плейсхолдера */
+        }
+
+        .auth-input:focus {
+            outline: none; /* Убираем обвод при фокусе */
+            background-color: #444; /* Цвет фона при фокусе */
+        }
+
+        .auth-buttons {
+            display: flex; /* Выравниваем кнопки в ряд */
+            justify-content: space-between;
+            width: 300px; /* Ширина контейнера кнопок */
+        }
+
+        .auth-button {
+            padding: 10px 20px; /* Отступы внутри кнопок */
+            border: none; /* Убираем стандартные границы */
+            border-radius: 8px; /* Скругление углов */
+            background-color: #fbbc05; /* Цвет фона кнопок */
+            color: #121212; /* Цвет текста */
+            cursor: pointer; /* Указатель при наведении */
+            font-size: 16px; /* Размер шрифта */
+            transition: background-color 0.3s; /* Плавный переход */
+        }
+
+        .auth-button:hover {
+            background-color: #e0a600; /* Цвет фона при наведении */
+        }
+
+
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
@@ -405,10 +460,13 @@
     </div>
 
     <div id="auth" style="display: block;">
-        <input type="email" id="email" placeholder="Email">
-        <input type="password" id="password" placeholder="Пароль">
-        <button id="signup">Регистрация</button>
-        <button id="login">Вход</button>
-    </div>
+        <h2>Вход / Регистрация</h2>
+        <input type="email" id="email" placeholder="Введите Email" class="auth-input">
+        <input type="password" id="password" placeholder="Введите Пароль" class="auth-input">
+        <div class="auth-buttons">
+            <button id="signup" class="auth-button">Регистрация</button>
+            <button id="login" class="auth-button">Вход</button>
+        </div>
+   </div>
 </body>
 </html>

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <img src="v.jpg" alt="Avatar" class="avatar"> 
     <title>Віркаграм</title>
     <style>
         * {
@@ -27,6 +28,13 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
+        }
+        .avatar {
+            width: 40px; /* Ширина аватарки */
+            height: 40px; /* Высота аватарки */
+            border-radius: 50%; /* Круглая форма */
+            margin-right: 10px; /* Отступ справа */
+            vertical-align: middle; /* Вертикальное выравнивание */
         }
 
         /* Заголовок для sidebar */
@@ -494,7 +502,7 @@
         <h2>Віркаграм</h2>
         <div id="chatList">
             <div class="chatItem">
-                <img src="https://via.placeholder.com/40" alt="Chat Icon">
+                <img src="v.jpg" alt="Chat Icon">
                 <div class="name">Глобальный чат</div>
             </div>
         </div>

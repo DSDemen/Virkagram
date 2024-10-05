@@ -282,6 +282,21 @@
             background-color: #e0a600; /* Цвет фона при наведении */
         }
 
+        #settingsArea {
+            padding: 20px;
+            background-color: #1e1e1e;
+            color: white;
+            border-left: 1px solid #333;
+        }
+
+        .setting-option {
+            margin-bottom: 20px;
+        }
+
+        .setting-option label {
+            margin-right: 10px;
+        }
+
 
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -311,6 +326,35 @@
             const fileInput = document.getElementById('fileInput');
             const previewImage = document.getElementById('previewImage');
             const removeImageButton = document.getElementById('removeImage');
+            const settingsButton = document.getElementById('settingsButton');
+            const chatArea = document.getElementById('chatArea');
+            const settingsArea = document.getElementById('settingsArea');
+
+            // Показать настройки при нажатии на кнопку
+            settingsButton.addEventListener('click', (event) => {
+                event.preventDefault();
+                settingsArea.style.display = 'block';
+                chatArea.style.display = 'none'; // Скрываем чат, если открыт
+            });
+
+            // Добавим возможность сохранения настроек
+            const saveButton = document.getElementById('saveSettings');
+            saveButton.addEventListener('click', () => {
+                const selectedTheme = document.getElementById('themeSelect').value;
+                const avatarFile = document.getElementById('avatarInput').files[0];
+
+                // Здесь можно сохранить настройки пользователя
+                alert(`Вы выбрали тему: ${selectedTheme}`);
+
+                if (avatarFile) {
+                    alert(`Выбран файл аватара: ${avatarFile.name}`);
+                    // Загрузите файл аватара через Firebase Storage или другой сервис
+                }
+
+                // Вернуть пользователя обратно в чат
+                settingsArea.style.display = 'none';
+                chatArea.style.display = 'flex';
+            });
 
             fileInput.addEventListener('change', () => {
                 const file = fileInput.files[0];
@@ -402,6 +446,53 @@
                     }
                 };
             }
+            
+            function applyTheme(theme) {
+                if (theme === 'light') {
+                    document.body.style.backgroundColor = '#f0f0f0';
+                    document.body.style.color = '#000';
+                } else {
+                    document.body.style.backgroundColor = '#1e1e1e';
+                    document.body.style.color = '#fff';
+                }
+            }
+
+            saveButton.addEventListener('click', () => {
+                const selectedTheme = document.getElementById('themeSelect').value;
+
+                // Применяем выбранную тему
+                applyTheme(selectedTheme);
+
+                // Сохраним выбранную тему в Local Storage
+                localStorage.setItem('theme', selectedTheme);
+
+                // Вернуть пользователя обратно в чат
+                settingsArea.style.display = 'none';
+                chatArea.style.display = 'flex';
+            });
+
+            // Загружаем тему при загрузке страницы
+            document.addEventListener("DOMContentLoaded", () => {
+                const savedTheme = localStorage.getItem('theme') || 'dark';
+                applyTheme(savedTheme);
+                document.getElementById('themeSelect').value = savedTheme;
+            });
+
+            saveButton.addEventListener('click', () => {
+                const avatarFile = document.getElementById('avatarInput').files[0];
+    
+                if (avatarFile) {
+                    const storageRef = storage.ref('avatars/' + auth.currentUser.uid + '/' + avatarFile.name);
+                    storageRef.put(avatarFile).then(() => {
+                        storageRef.getDownloadURL().then((downloadURL) => {
+                            // Сохраняем ссылку на аватар в базе данных
+                            db.ref('users/' + auth.currentUser.uid).update({
+                                avatarUrl: downloadURL
+                            });
+                        });
+                    });
+                }
+            });
 
             function clearChat() {
                 const messagesRef = db.ref('messages');
@@ -558,7 +649,7 @@
             <div class="bar"></div>
         </button>
         <ul id="menu">
-            <li><a href="#">Настройки</a></li>
+            <li><a href="#" id="settingsButton">Настройки</a></li>
             <li><a href="#" id="logoutButton">Выход</a></li>
         </ul>
 
@@ -592,5 +683,20 @@
             <button id="login" class="auth-button">Вход</button>
         </div>
    </div>
+   <div id="settingsArea" style="display: none;">
+        <h2>Настройки</h2>
+        <div class="setting-option">
+            <label for="themeSelect">Тема:</label>
+            <select id="themeSelect">
+                <option value="dark">Тёмная</option>
+                <option value="light">Светлая</option>
+            </select>
+        </div>
+        <div class="setting-option">
+            <label for="avatarInput">Загрузить аватар:</label>
+            <input type="file" id="avatarInput" accept="image/*">
+        </div>
+        <button id="saveSettings">Сохранить</button>
+</div>
 </body>
 </html>

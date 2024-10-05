@@ -308,6 +308,30 @@
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
             const logoutButton = document.getElementById('logoutButton'); // Получаем кнопку выхода
+            const fileInput = document.getElementById('fileInput');
+            const previewImage = document.getElementById('previewImage');
+            const removeImageButton = document.getElementById('removeImage');
+
+            fileInput.addEventListener('change', () => {
+                const file = fileInput.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImage.src = e.target.result; // Устанавливаем источник изображения для превью
+                        previewImage.style.display = 'block'; // Показываем изображение
+                        removeImageButton.style.display = 'inline'; // Показываем кнопку удаления
+                    }
+                    reader.readAsDataURL(file); // Читаем файл как Data URL
+                }
+            });
+
+            // Обработчик для кнопки удаления изображения
+            removeImageButton.addEventListener('click', () => {
+                fileInput.value = ''; // Сбрасываем выбранный файл
+                previewImage.src = ''; // Убираем источник изображения
+                previewImage.style.display = 'none'; // Скрываем изображение
+                removeImageButton.style.display = 'none'; // Скрываем кнопку удаления
+            });
     
             // Обработчик события для кнопки меню
             menuButton.addEventListener('click', () => {
@@ -480,7 +504,9 @@
         <div id="messages"></div>
         <div id="inputArea">
             <label for="fileInput" id="uploadButton">📎</label>
-            <input type="file" id="fileInput">
+            <input type="file" id="fileInput" accept="image/*">
+            <img id="previewImage" style="display: none; max-width: 100px; margin-left: 10px;"> <!-- Элемент для отображения выбранного изображения -->
+            <button id="removeImage" style="display: none;">Удалить изображение</button> <!-- Кнопка для удаления изображения -->
             <input type="text" id="messageInput" placeholder="Введите сообщение">
             <button id="sendButton">Отправить</button>
         </div>

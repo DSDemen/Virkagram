@@ -156,6 +156,37 @@
         #uploadButton:hover {
             background-color: #555;
         }
+        
+        .menu-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 10px;
+            margin-bottom: 20px;
+        }
+
+        .bar {
+           display: block;
+           width: 30px;
+           height: 3px;
+           background-color: #fbbc05;
+           margin: 5px 0;
+           transition: 0.4s;
+        }
+
+        /* Стили для анимации */
+        .menu-button.active .bar:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+
+        .menu-button.active .bar:nth-child(2) {
+            opacity: 0;
+        }
+
+        .menu-button.active .bar:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
@@ -179,6 +210,13 @@
         const storage = firebase.storage();
 
         document.addEventListener("DOMContentLoaded", () => {
+            const menuButton = document.getElementById('menuButton');
+            menuButton.addEventListener('click', () => {
+                menuButton.classList.toggle('active');
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('open'); // Добавляем класс для открытия меню
+            });
+            
             const signupBtn = document.getElementById('signup');
             const loginBtn = document.getElementById('login');
             const sendBtn = document.getElementById('sendButton');
@@ -288,6 +326,11 @@
 </head>
 <body>
     <div id="sidebar">
+        <button id="menuButton" class="menu-button">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+        </button>
         <h2>Віркаграм</h2>
         <div id="chatList">
             <div class="chatItem">

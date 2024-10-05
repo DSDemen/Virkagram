@@ -187,6 +187,34 @@
             transform: rotate(45deg) translate(-5px, -6px);
         }
 
+        #menu {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        #menu li {
+            margin: 10px 0;
+        }
+
+        #menu li a {
+            color: #fbbc05;
+            text-decoration: none;
+        }
+
+        #menu li a:hover {
+            text-decoration: underline;
+        }
+
+        /* Скрываем меню по умолчанию */
+        #menu {
+            display: none;
+        }        
+
+        /* Показываем меню при открытии */
+        #sidebar.open #menu {
+            display: block;
+        }
+
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
@@ -216,6 +244,13 @@
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('open'); // Добавляем класс для открытия меню
             });
+
+            menuButton.addEventListener('click', () => {
+                menuButton.classList.toggle('active');
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.toggle('open'); // Добавляем класс для открытия меню
+            });
+
             
             const signupBtn = document.getElementById('signup');
             const loginBtn = document.getElementById('login');
@@ -331,6 +366,13 @@
             <div class="bar"></div>
             <div class="bar"></div>
         </button>
+        <ul id="menu">
+            <li><a href="#">Чат 1</a></li>
+            <li><a href="#">Чат 2</a></li>
+            <li><a href="#">Настройки</a></li>
+            <li><a href="#">Выход</a></li>
+        </ul>
+
         <h2>Віркаграм</h2>
         <div id="chatList">
             <div class="chatItem">

@@ -239,16 +239,12 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
+    
+            // Обработчик события для кнопки меню
             menuButton.addEventListener('click', () => {
-                menuButton.classList.toggle('active');
+                menuButton.classList.toggle('active'); // Меняем класс активного состояния
                 const sidebar = document.getElementById('sidebar');
-                sidebar.classList.toggle('open'); // Добавляем класс для открытия меню
-            });
-
-            menuButton.addEventListener('click', () => {
-                menuButton.classList.toggle('active');
-                const sidebar = document.getElementById('sidebar');
-                sidebar.classList.toggle('open'); // Добавляем класс для открытия меню
+                sidebar.classList.toggle('open'); // Добавляем/убираем класс для открытия меню
             });
 
             

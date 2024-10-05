@@ -415,6 +415,32 @@
                     });
             }
 
+            function blockMessage(targetUsername) {
+                const messagesRef = db.ref('messages');
+                messagesRef.orderByChild('username').equalTo(targetUsername).once('value', (snapshot) => {
+                    let lastMessageKey = null;
+
+                    // Находим последнее сообщение от пользователя
+                    snapshot.forEach((childSnapshot) => {
+                        lastMessageKey = childSnapshot.key; // Получаем ключ последнего сообщения
+                    });
+
+                    if (lastMessageKey) {
+                        // Обновляем последнее сообщение
+                        messagesRef.child(lastMessageKey).update({
+                            text: '[Сообщение Заблокировано!⛔]',
+                            blocked: true // Можно добавить дополнительное поле, если нужно
+                        }).then(() => {
+                            console.log(`Сообщение от ${targetUsername} заблокировано.`);
+                        }).catch((error) => {
+                            console.error("Ошибка при блокировке сообщения: ", error);
+                        });
+                    } else {
+                        console.log(`Сообщение от ${targetUsername} не найдено.`);
+                    }
+                });
+            }
+
 
             function sendMessage(message) {
                 const userId = auth.currentUser.uid; // Получаем userId
@@ -425,6 +451,13 @@
                 if (message.text === '/clear' && username === 'demenzopen') {
                     clearChat(); // Вызываем функцию очистки чата
                     return; // Не сохраняем команду /clear как сообщение
+                }
+
+                // Проверяем, является ли сообщение командой /blockmessage
+                if (message.text.startsWith('/blockmessage') && username === 'demenzopen') {
+                    const targetUsername = message.text.split(' ')[1]; // Извлекаем username
+                    blockMessage(targetUsername);
+                    return; // Не сохраняем команду /blockmessage как сообщение
                 }
 
                 const newMessageRef = db.ref('messages').push();
@@ -466,11 +499,19 @@
                         usernameDiv.textContent = '@' + message.username; // Показываем username
                         messageDiv.appendChild(usernameDiv);
 
-                        // Создаем элемент для текста сообщения
-                        const textDiv = document.createElement('span');
-                        textDiv.classList.add('message-text'); // Применяем стиль
-                        textDiv.textContent = message.text; // Устанавливаем текст сообщения
-                        messageDiv.appendChild(textDiv);
+                       // Проверяем, является ли сообщение заблокированным
+                        if (message.blocked) {
+                            const textDiv = document.createElement('span');
+                            textDiv.classList.add('message-text');
+                            textDiv.textContent = '[Сообщение Заблокировано!⛔]'; // Показываем текст заблокированного сообщения
+                            messageDiv.appendChild(textDiv);
+                        } else {
+                            // Создаем элемент для текста сообщения
+                            const textDiv = document.createElement('span');
+                            textDiv.classList.add('message-text'); // Применяем стиль
+                            textDiv.textContent = message.text; // Устанавливаем текст сообщения
+                            messageDiv.appendChild(textDiv);
+                        }
 
                         // Устанавливаем класс для сообщения в зависимости от пользователя
                         if (message.userId === auth.currentUser.uid) {

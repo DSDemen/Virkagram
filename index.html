@@ -448,12 +448,48 @@
             }
             
             function applyTheme(theme) {
-                if (theme === 'light') {
-                    document.body.style.backgroundColor = '#f0f0f0';
-                    document.body.style.color = '#000';
-                } else {
+                if (theme === 'chai') {
+                    const otherMessages = document.querySelectorAll('.message.other');
+        
+                    // Новый цвет фона, который хотим установить
+                    const newBackgroundColor = '#33393F'; // Например, оранжевый
+        
+                    // Проходимся по каждому элементу и меняем его цвет фона
+                    otherMessages.forEach(message => {
+                        message.style.backgroundColor = newBackgroundColor;
+                    });
+
+                    const otherMessages2 = document.querySelectorAll('.message.user');
+        
+                    // Новый цвет фона, который хотим установить
+                    const newBackgroundColor2 = '#2B4143'; // Например, оранжевый
+        
+                    // Проходимся по каждому элементу и меняем его цвет фона
+                    otherMessages2.forEach(message => {
+                        message.style.backgroundColor = newBackgroundColor2;
+                    });
+                    document.body.style.backgroundColor = '#282E33';
+                } else if (theme === 'dark') {
+                    const otherMessages = document.querySelectorAll('.message.other');
+        
+                    // Новый цвет фона, который хотим установить
+                    const newBackgroundColor = '#333'; // Например, оранжевый
+        
+                    // Проходимся по каждому элементу и меняем его цвет фона
+                    otherMessages.forEach(message => {
+                        message.style.backgroundColor = newBackgroundColor;
+                    });
+
+                    const otherMessages2 = document.querySelectorAll('.message.user');
+        
+                    // Новый цвет фона, который хотим установить
+                    const newBackgroundColor2 = '#2f80ed'; // Например, оранжевый
+        
+                    // Проходимся по каждому элементу и меняем его цвет фона
+                    otherMessages2.forEach(message => {
+                        message.style.backgroundColor = newBackgroundColor2;
+                    });
                     document.body.style.backgroundColor = '#1e1e1e';
-                    document.body.style.color = '#fff';
                 }
             }
 
@@ -688,8 +724,8 @@
         <div class="setting-option">
             <label for="themeSelect">Тема:</label>
             <select id="themeSelect">
-                <option value="dark">Тёмная</option>
-                <option value="light">Светлая</option>
+                <option value="dark">Обычная</option>
+                <option value="chai">Чай Тема</option>
             </select>
         </div>
         <div class="setting-option">

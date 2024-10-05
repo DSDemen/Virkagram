@@ -5,35 +5,156 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Віркаграм</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f0f0f0;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        #app {
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #1e1e1e;
+            color: white;
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Левое меню */
+        #sidebar {
             width: 300px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: white;
+            background-color: #2a2a2a;
+            padding: 10px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Заголовок для sidebar */
+        #sidebar h2 {
+            font-size: 1.2em;
+            margin-bottom: 20px;
+            color: #fbbc05;
+        }
+
+        /* Список чатов */
+        #chatList {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .chatItem {
+            padding: 15px;
+            margin-bottom: 5px;
+            background-color: #333;
             border-radius: 8px;
-            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+        }
+
+        .chatItem:hover {
+            background-color: #444;
+        }
+
+        .chatItem img {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .chatItem .name {
+            font-weight: bold;
+        }
+
+        /* Основная область чата */
+        #chatArea {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #121212;
+            border-left: 1px solid #333;
         }
 
         #messages {
-            max-height: 300px;
+            flex-grow: 1;
+            padding: 20px;
             overflow-y: auto;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            padding: 5px;
         }
 
         .message {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .message.user {
+            background-color: #2f80ed;
+            color: white;
+            align-self: flex-end;
+        }
+
+        .message.other {
+            background-color: #333;
+            color: white;
+            align-self: flex-start;
         }
 
         .message img {
-            max-width: 100%;
-            height: auto;
+            max-width: 100px;
+            max-height: 100px;
+            display: block;
+        }
+
+        #inputArea {
+            display: flex;
+            padding: 15px;
+            background-color: #1e1e1e;
+            border-top: 1px solid #333;
+        }
+
+        #messageInput {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        #messageInput:focus {
+            outline: none;
+        }
+
+        #fileInput {
+            display: none;
+        }
+
+        #sendButton {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #fbbc05;
+            color: #121212;
+            cursor: pointer;
+        }
+
+        #sendButton:hover {
+            background-color: #e0a600;
+        }
+
+        /* Стили для кнопки загрузки файла */
+        #uploadButton {
+            padding: 10px;
+            background-color: #444;
+            border-radius: 8px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        #uploadButton:hover {
+            background-color: #555;
         }
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -52,7 +173,6 @@
             measurementId: "G-XM8J8E6FCY"
         };
 
-        // Инициализация Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.database();
@@ -77,7 +197,7 @@
                 auth.signInWithEmailAndPassword(email, password)
                     .then(() => {
                         document.getElementById('auth').style.display = 'none';
-                        document.getElementById('chat').style.display = 'block';
+                        document.getElementById('chat').style.display = 'flex';
                         loadMessages();
                     })
                     .catch(error => {
@@ -86,7 +206,7 @@
             };
 
             document.getElementById('send').onclick = () => {
-                const message = document.getElementById('message').value;
+                const message = document.getElementById('messageInput').value;
                 const fileInput = document.getElementById('fileInput');
                 
                 if (fileInput.files[0]) {
@@ -103,7 +223,7 @@
                     userId: auth.currentUser.uid,
                     timestamp: Date.now(),
                 });
-                document.getElementById('message').value = '';
+                document.getElementById('messageInput').value = '';
             }
 
             function uploadImage(file) {
@@ -125,6 +245,11 @@
                         const message = messages[key];
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
+                        if (message.userId === auth.currentUser.uid) {
+                            messageDiv.classList.add('user');
+                        } else {
+                            messageDiv.classList.add('other');
+                        }
                         if (message.text) {
                             messageDiv.textContent = message.text;
                         }
@@ -141,7 +266,7 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     document.getElementById('auth').style.display = 'none';
-                    document.getElementById('chat').style.display = 'block';
+                    document.getElementById('chat').style.display = 'flex';
                     loadMessages();
                 } else {
                     document.getElementById('auth').style.display = 'block';
@@ -152,19 +277,31 @@
     </script>
 </head>
 <body>
-    <div id="app">
-        <div id="auth">
-            <input type="email" id="email" placeholder="Email" required>
-            <input type="password" id="password" placeholder="Пароль" required>
-            <button id="signup">Регистрация</button>
-            <button id="login">Вход</button>
+    <div id="sidebar">
+        <h2>Віркаграм</h2>
+        <div id="chatList">
+            <div class="chatItem">
+                <img src="https://via.placeholder.com/40" alt="Chat Icon">
+                <div class="name">Глобальный чат</div>
+            </div>
         </div>
-        <div id="chat" style="display:none;">
-            <div id="messages"></div>
-            <input type="text" id="message" placeholder="Сообщение">
+    </div>
+
+    <div id="chatArea" style="display:none;" id="chat">
+        <div id="messages"></div>
+        <div id="inputArea">
+            <label for="fileInput" id="uploadButton">📎</label>
             <input type="file" id="fileInput">
-            <button id="send">Отправить</button>
+            <input type="text" id="messageInput" placeholder="Введите сообщение">
+            <button id="sendButton">Отправить</button>
         </div>
+    </div>
+
+    <div id="auth">
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Пароль" required>
+        <button id="signup">Регистрация</button>
+        <button id="login">Вход</button>
     </div>
 </body>
 </html>

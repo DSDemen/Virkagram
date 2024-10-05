@@ -442,35 +442,34 @@
             }
 
 
-            function sendMessage(message) {
-                const userId = auth.currentUser.uid; // Получаем userId
-                const email = auth.currentUser.email; // Получаем email текущего пользователя
-                const username = email.split('@')[0]; // Получаем часть перед @
+            function sendMessage() {
+                const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
+                if (messageText) { // Если текст не пустой
+                    // Ваш код для отправки сообщения в Firebase
+                    const userId = auth.currentUser.uid; // Получаем userId
+                    const email = auth.currentUser.email; // Получаем email текущего пользователя
+                    const username = email.split('@')[0]; // Получаем часть перед @
 
-                // Проверяем, является ли сообщение командой /clear
-                if (message.text === '/clear' && username === 'demenzopen') {
-                    clearChat(); // Вызываем функцию очистки чата
-                    return; // Не сохраняем команду /clear как сообщение
+                    const newMessageRef = db.ref('messages').push();
+
+                    newMessageRef.set({
+                        text: messageText,
+                        userId: userId,
+                        username: username,
+                        timestamp: Date.now(),
+                    });
+
+                    // Очищаем поле ввода
+                    messageInput.value = '';
                 }
-
-                // Проверяем, является ли сообщение командой /blockmessage
-                if (message.text.startsWith('/blockmessage') && username === 'demenzopen') {
-                    const targetUsername = message.text.split(' ')[1]; // Извлекаем username
-                    blockMessage(targetUsername);
-                    return; // Не сохраняем команду /blockmessage как сообщение
-                }
-
-                const newMessageRef = db.ref('messages').push();
-
-                newMessageRef.set({
-                    ...message,
-                    userId: userId,
-                    username: username,
-                    timestamp: Date.now(),
-                });
-
-                document.getElementById('messageInput').value = '';
             }
+
+            messageInput.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') { // Проверяем, нажата ли клавиша "Enter"
+                    event.preventDefault(); // Отменяем стандартное поведение (например, переход на новую строку)
+                    sendMessage(); // Вызываем функцию отправки сообщения
+                }
+            });
 
 
             function uploadImage(file) {

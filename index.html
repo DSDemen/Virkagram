@@ -381,14 +381,19 @@
 
             function sendMessage(message) {
                 const newMessageRef = db.ref('messages').push();
-                const username = auth.currentUser.displayName || 'Аноним'; // Получаем имя пользователя
+                const userId = auth.currentUser.uid; // Получаем userId
+
+                // Извлекаем username из email текущего пользователя
+                const email = auth.currentUser.email; // Получаем email текущего пользователя
+                const username = email.split('@')[0]; // Получаем часть перед @
 
                 newMessageRef.set({
                     ...message,
-                    userId: auth.currentUser.uid,
-                    username: username, // Сохраняем имя пользователя в сообщении
+                    userId: userId,
+                    username: username, // Добавляем username в сообщение
                     timestamp: Date.now(),
                 });
+
                 document.getElementById('messageInput').value = '';
             }
 
@@ -411,31 +416,31 @@
                         const message = messages[key];
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
-            
-                        // Определяем, кто отправил сообщение
+
+                        // Создаем элемент для username
+                        const usernameDiv = document.createElement('span');
+                        usernameDiv.classList.add('username'); // Применяем стиль
+                        usernameDiv.textContent = '@' + message.username; // Показываем username
+                        messageDiv.appendChild(usernameDiv);
+
+                        // Создаем элемент для текста сообщения
+                        const textDiv = document.createElement('span');
+                        textDiv.classList.add('message-text'); // Применяем стиль
+                        textDiv.textContent = message.text; // Устанавливаем текст сообщения
+                        messageDiv.appendChild(textDiv);
+
+                        // Устанавливаем класс для сообщения в зависимости от пользователя
                         if (message.userId === auth.currentUser.uid) {
                             messageDiv.classList.add('user');
                         } else {
                             messageDiv.classList.add('other');
                         }
 
-                        // Создаем элемент для отображения имени пользователя
-                        const usernameDiv = document.createElement('span');
-                        usernameDiv.classList.add('username');
-                        usernameDiv.textContent = `@${message.username}`; // Получаем username из сообщения
-
-                        // Создаем элемент для текста сообщения
-                        const textDiv = document.createElement('span');
-                        textDiv.classList.add('message-text');
-                        textDiv.textContent = message.text;
-
-                        // Добавляем имя пользователя и текст сообщения в одно сообщение
-                        messageDiv.appendChild(usernameDiv);
-                        messageDiv.appendChild(textDiv);
                         messagesDiv.appendChild(messageDiv);
                     }
                 });
             }
+
 
             auth.onAuthStateChanged(user => {
                 if (user) {

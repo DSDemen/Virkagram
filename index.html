@@ -413,12 +413,42 @@
             const settingsButton = document.getElementById('settingsButton');
             const chatArea = document.getElementById('chatArea');
             const settingsArea = document.getElementById('settingsArea');
+            const changepassb = document.getElementById('changepass');
 
             // Показать настройки при нажатии на кнопку
             settingsButton.addEventListener('click', (event) => {
                 event.preventDefault();
                 settingsArea.style.display = 'block';
                 chatArea.style.display = 'none'; // Скрываем чат, если открыт
+            });
+
+            changepassb.addEventListener('click', (event) => {
+                // Используем prompt для получения нового пароля
+                const newPassword = prompt("Введите новый пароль:");
+
+                // Проверяем, ввел ли пользователь новый пароль
+                if (newPassword) {
+                    // Получите текущего пользователя
+                    const user = firebase.auth().currentUser;
+
+                    // Проверьте, что пользователь авторизован
+                    if (user) {
+                        // Обновите пароль
+                        user.updatePassword(newPassword).then(() => {
+                            alert('Пароль успешно изменен!');
+                            // Здесь можно добавить код для дополнительного уведомления
+                        }).catch((error) => {
+                            console.error('Ошибка при изменении пароля:', error);
+                            alert('Ошибка при изменении пароля: ' + error.message);
+                            // Здесь можно обработать ошибку (например, уведомить пользователя)
+                        });
+                    } else {
+                        alert('Пользователь не авторизован.');
+                        // Здесь можно уведомить пользователя о том, что он должен войти в систему
+                    }
+                } else {
+                    alert('Новый пароль не был введен.');
+                }
             });
 
             // Добавим возможность сохранения настроек
@@ -815,6 +845,7 @@
         <label for="avatarInput">Загрузить аватар:</label>
         <input type="file" id="avatarInput" class="custom-file-input" accept="image/*">
     </div>
+    <button id="changepass" class="custom-button">Изменить пароль</button>
     <button id="saveSettings" class="custom-button">Сохранить</button>
 </div>
 </body>

@@ -282,20 +282,104 @@
             background-color: #e0a600; /* Цвет фона при наведении */
         }
 
+        /* Область настроек */
         #settingsArea {
             padding: 20px;
             background-color: #1e1e1e;
             color: white;
             border-left: 1px solid #333;
+            max-width: 400px;
+            border-radius: 10px;
         }
 
+        /* Отступы для каждого параметра настройки */
         .setting-option {
             margin-bottom: 20px;
+            display: flex;
+            align-items: center;
         }
 
+        /* Стили для ярлыков */
         .setting-option label {
             margin-right: 10px;
+            font-size: 16px;
         }
+
+        /* Кастомные стили для выпадающего списка */
+        .custom-select {
+            width: 100%;
+            padding: 10px;
+            background-color: #333;
+            color: white;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 16px;
+            appearance: none;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            cursor: pointer;
+        }
+
+        .custom-select:focus {
+            border-color: #2f80ed;
+            outline: none;
+        }
+
+        /* Стили для кнопки сохранения */
+        .custom-button {
+            padding: 10px 20px;
+            background-color: #2f80ed;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-button:hover {
+            background-color: #1e5bb8;
+        }
+
+        .custom-button:focus {
+            outline: none;
+        }
+
+        /* Кастомные стили для кнопки загрузки файла */
+        .custom-file-input {
+            padding: 10px;
+            background-color: #333;
+            color: #ccc;
+            border: 1px solid #555;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .custom-file-input:hover {
+            background-color: #444;
+        }
+
+        .custom-file-input:focus {
+            outline: none;
+            border-color: #2f80ed;
+        }
+
+        /* Стиль для текста в блоке выбора файла */
+        .custom-file-input::file-selector-button {
+            color: white;
+            background-color: #2f80ed;
+            border: none;
+            padding: 5px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .custom-file-input::file-selector-button:hover {
+            background-color: #1e5bb8;
+        }
+
 
 
     </style>
@@ -720,19 +804,19 @@
         </div>
    </div>
    <div id="settingsArea" style="display: none;">
-        <h2>Настройки</h2>
-        <div class="setting-option">
-            <label for="themeSelect">Тема:</label>
-            <select id="themeSelect">
-                <option value="dark">Обычная</option>
-                <option value="chai">Чай Тема</option>
-            </select>
-        </div>
-        <div class="setting-option">
-            <label for="avatarInput">Загрузить аватар:</label>
-            <input type="file" id="avatarInput" accept="image/*">
-        </div>
-        <button id="saveSettings">Сохранить</button>
+    <h2>Настройки</h2>
+    <div class="setting-option">
+        <label for="themeSelect">Тема:</label>
+        <select id="themeSelect" class="custom-select">
+            <option value="dark">Обычная</option>
+            <option value="chai">Чай Тема</option>
+        </select>
+    </div>
+    <div class="setting-option">
+        <label for="avatarInput">Загрузить аватар:</label>
+        <input type="file" id="avatarInput" class="custom-file-input" accept="image/*">
+    </div>
+    <button id="saveSettings" class="custom-button">Сохранить</button>
 </div>
 </body>
 </html>

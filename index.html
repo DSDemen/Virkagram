@@ -29,6 +29,14 @@
             justify-content: space-between;
         }
 
+        /* Гамбургер-меню */
+        #hamburgerMenu {
+            font-size: 30px;
+            cursor: pointer;
+            color: #fbbc05;
+            margin-bottom: 20px;
+        }
+
         /* Заголовок для sidebar */
         #sidebar h2 {
             font-size: 1.2em;
@@ -106,6 +114,13 @@
             display: block;
         }
 
+        /* Отображение username над сообщением */
+        .username {
+            font-size: 0.8em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+
         #inputArea {
             display: flex;
             padding: 15px;
@@ -156,6 +171,51 @@
         #uploadButton:hover {
             background-color: #555;
         }
+
+        /* Модальное окно для профиля */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-content {
+            background-color: #2a2a2a;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 10px;
+            width: 300px;
+            color: white;
+        }
+
+        .modal-content input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+            background-color: #333;
+            color: white;
+        }
+
+        .modal-content button {
+            padding: 10px;
+            width: 100%;
+            border: none;
+            border-radius: 5px;
+            background-color: #fbbc05;
+            color: black;
+            cursor: pointer;
+        }
+
+        .modal-content button:hover {
+            background-color: #e0a600;
+        }
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
@@ -178,10 +238,54 @@
         const db = firebase.database();
         const storage = firebase.storage();
 
+        let currentUserProfile = {
+            username: "User",
+            avatarUrl: "",
+            age: 18
+        };
+
         document.addEventListener("DOMContentLoaded", () => {
             const signupBtn = document.getElementById('signup');
             const loginBtn = document.getElementById('login');
             const sendBtn = document.getElementById('sendButton');
+            const hamburgerMenu = document.getElementById('hamburgerMenu');
+            const profileModal = document.getElementById('profileModal');
+            const closeProfile = document.getElementById('closeProfile');
+            const saveProfile = document.getElementById('saveProfile');
+
+            // Открыть модальное окно для настройки профиля
+            hamburgerMenu.onclick = () => {
+                profileModal.style.display = "block";
+            };
+
+            // Закрыть модальное окно
+            closeProfile.onclick = () => {
+                profileModal.style.display = "none";
+            };
+
+            // Сохранить настройки профиля
+            saveProfile.onclick = () => {
+                const username = document.getElementById('profileUsername').value;
+                const age = document.getElementById('profileAge').value;
+                const avatar = document.getElementById('profileAvatar').files[0];
+
+                currentUserProfile.username = username;
+                currentUserProfile.age = age;
+
+                if (avatar) {
+                    const storageRef = storage.ref('avatars/' + avatar.name);
+                    storageRef.put(avatar).then(() => {
+                        storageRef.getDownloadURL().then((downloadURL) => {
+                            currentUserProfile.avatarUrl = downloadURL;
+                            alert("Профиль обновлен!");
+                            profileModal.style.display = "none";
+                        });
+                    });
+                } else {
+                    alert("Профиль обновлен!");
+                    profileModal.style.display = "none";
+                }
+            };
 
             if (signupBtn) {
                 signupBtn.onclick = () => {
@@ -204,7 +308,7 @@
                     auth.signInWithEmailAndPassword(email, password)
                         .then(() => {
                             document.getElementById('auth').style.display = 'none';
-                            document.getElementById('chatArea').style.display = 'flex'; // Corrected ID
+                            document.getElementById('chat').style.display = 'flex';
                             loadMessages();
                         })
                         .catch(error => {
@@ -231,6 +335,8 @@
                 newMessageRef.set({
                     ...message,
                     userId: auth.currentUser.uid,
+                    username: currentUserProfile.username,
+                    avatarUrl: currentUserProfile.avatarUrl,
                     timestamp: Date.now(),
                 });
                 document.getElementById('messageInput').value = '';
@@ -260,8 +366,15 @@
                         } else {
                             messageDiv.classList.add('other');
                         }
+
+                        // Добавление username над сообщением
+                        const usernameDiv = document.createElement('div');
+                        usernameDiv.classList.add('username');
+                        usernameDiv.textContent = message.username;
+                        messageDiv.appendChild(usernameDiv);
+
                         if (message.text) {
-                            messageDiv.textContent = message.text;
+                            messageDiv.textContent += message.text;
                         }
                         if (message.imageUrl) {
                             const img = document.createElement('img');
@@ -276,11 +389,11 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     document.getElementById('auth').style.display = 'none';
-                    document.getElementById('chatArea').style.display = 'flex';
+                    document.getElementById('chat').style.display = 'flex';
                     loadMessages();
                 } else {
-                    document.getElementById('auth').style.display = 'block';
-                    document.getElementById('chatArea').style.display = 'none';
+                    document.getElementById('auth').style.display = 'flex';
+                    document.getElementById('chat').style.display = 'none';
                 }
             });
         });
@@ -288,30 +401,53 @@
 </head>
 <body>
     <div id="sidebar">
-        <h2>Віркаграм</h2>
+        <div id="hamburgerMenu">&#9776;</div>
+        <h2>Чаты</h2>
         <div id="chatList">
-            <div class="chatItem">
-                <img src="https://via.placeholder.com/40" alt="Chat Icon">
-                <div class="name">Глобальный чат</div>
-            </div>
+            <!-- Чаты будут загружены здесь -->
         </div>
     </div>
-
-    <div id="chatArea" style="display:none;">
-        <div id="messages"></div>
+    <div id="chatArea">
+        <div id="messages">
+            <!-- Сообщения будут загружены здесь -->
+        </div>
         <div id="inputArea">
-            <label for="fileInput" id="uploadButton">📎</label>
+            <input type="text" id="messageInput" placeholder="Введите ваше сообщение">
             <input type="file" id="fileInput">
-            <input type="text" id="messageInput" placeholder="Введите сообщение">
             <button id="sendButton">Отправить</button>
         </div>
     </div>
 
-    <div id="auth" style="display: block;">
+    <!-- Модальное окно для профиля -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <span id="closeProfile" style="cursor:pointer; color:red;">&times;</span>
+            <h3>Настройки профиля</h3>
+            <input type="text" id="profileUsername" placeholder="Username" value="User">
+            <input type="number" id="profileAge" placeholder="Возраст" value="18">
+            <input type="file" id="profileAvatar" accept="image/*">
+            <button id="saveProfile">Сохранить</button>
+        </div>
+    </div>
+
+    <div id="auth" style="display: flex; flex-direction: column; padding: 20px;">
+        <h2>Авторизация</h2>
         <input type="email" id="email" placeholder="Email">
         <input type="password" id="password" placeholder="Пароль">
         <button id="signup">Регистрация</button>
         <button id="login">Вход</button>
+    </div>
+
+    <div id="chat" style="display: none; flex-direction: column; width: 100%;">
+        <h2>Чат</h2>
+        <div id="chatArea">
+            <div id="messages"></div>
+            <div id="inputArea">
+                <input type="text" id="messageInput" placeholder="Введите ваше сообщение">
+                <input type="file" id="fileInput">
+                <button id="sendButton">Отправить</button>
+            </div>
+        </div>
     </div>
 </body>
 </html>

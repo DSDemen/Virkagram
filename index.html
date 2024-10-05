@@ -239,12 +239,32 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
+            const signupBtn = document.getElementById('signup');
+            const loginBtn = document.getElementById('login');
+            const sendBtn = document.getElementById('sendButton');
+            const menuButton = document.getElementById('menuButton');
+            const logoutButton = document.getElementById('logoutButton'); // Получаем кнопку выхода
     
             // Обработчик события для кнопки меню
             menuButton.addEventListener('click', () => {
                 menuButton.classList.toggle('active'); // Меняем класс активного состояния
                 const sidebar = document.getElementById('sidebar');
                 sidebar.classList.toggle('open'); // Добавляем/убираем класс для открытия меню
+            });
+
+            // Обработчик события для кнопки выхода
+            logoutButton.addEventListener('click', (event) => {
+                event.preventDefault(); // Предотвращаем переход по ссылке
+                auth.signOut() // Выход из аккаунта Firebase
+                    .then(() => {
+                        alert("Вы вышли из аккаунта!"); // Уведомление о выходе
+                         // Обновите интерфейс
+                        document.getElementById('auth').style.display = 'block';
+                        document.getElementById('chatArea').style.display = 'none';
+                    })
+                    .catch((error) => {
+                        console.error("Ошибка выхода: ", error);
+                    });
             });
 
             
@@ -366,7 +386,7 @@
             <li><a href="#">Чат 1</a></li>
             <li><a href="#">Чат 2</a></li>
             <li><a href="#">Настройки</a></li>
-            <li><a href="#">Выход</a></li>
+            <li><a href="#" id="logoutButton">Выход</a></li>
         </ul>
 
         <h2>Віркаграм</h2>

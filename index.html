@@ -179,42 +179,52 @@
         const storage = firebase.storage();
 
         document.addEventListener("DOMContentLoaded", () => {
-            document.getElementById('signup').onclick = () => {
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                auth.createUserWithEmailAndPassword(email, password)
-                    .then(() => {
-                        alert("Регистрация успешна!");
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            };
+            const signupBtn = document.getElementById('signup');
+            const loginBtn = document.getElementById('login');
+            const sendBtn = document.getElementById('sendButton');
 
-            document.getElementById('login').onclick = () => {
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                auth.signInWithEmailAndPassword(email, password)
-                    .then(() => {
-                        document.getElementById('auth').style.display = 'none';
-                        document.getElementById('chat').style.display = 'flex';
-                        loadMessages();
-                    })
-                    .catch(error => {
-                        alert(error.message);
-                    });
-            };
+            if (signupBtn) {
+                signupBtn.onclick = () => {
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    auth.createUserWithEmailAndPassword(email, password)
+                        .then(() => {
+                            alert("Регистрация успешна!");
+                        })
+                        .catch(error => {
+                            alert(error.message);
+                        });
+                };
+            }
 
-            document.getElementById('send').onclick = () => {
-                const message = document.getElementById('messageInput').value;
-                const fileInput = document.getElementById('fileInput');
-                
-                if (fileInput.files[0]) {
-                    uploadImage(fileInput.files[0]);
-                } else {
-                    sendMessage({ text: message });
-                }
-            };
+            if (loginBtn) {
+                loginBtn.onclick = () => {
+                    const email = document.getElementById('email').value;
+                    const password = document.getElementById('password').value;
+                    auth.signInWithEmailAndPassword(email, password)
+                        .then(() => {
+                            document.getElementById('auth').style.display = 'none';
+                            document.getElementById('chatArea').style.display = 'flex'; // Corrected ID
+                            loadMessages();
+                        })
+                        .catch(error => {
+                            alert(error.message);
+                        });
+                };
+            }
+
+            if (sendBtn) {
+                sendBtn.onclick = () => {
+                    const message = document.getElementById('messageInput').value;
+                    const fileInput = document.getElementById('fileInput');
+
+                    if (fileInput.files[0]) {
+                        uploadImage(fileInput.files[0]);
+                    } else {
+                        sendMessage({ text: message });
+                    }
+                };
+            }
 
             function sendMessage(message) {
                 const newMessageRef = db.ref('messages').push();
@@ -240,7 +250,7 @@
                     const messages = snapshot.val();
                     const messagesDiv = document.getElementById('messages');
                     messagesDiv.innerHTML = '';
-                    
+
                     for (let key in messages) {
                         const message = messages[key];
                         const messageDiv = document.createElement('div');
@@ -266,11 +276,11 @@
             auth.onAuthStateChanged(user => {
                 if (user) {
                     document.getElementById('auth').style.display = 'none';
-                    document.getElementById('chat').style.display = 'flex';
+                    document.getElementById('chatArea').style.display = 'flex';
                     loadMessages();
                 } else {
                     document.getElementById('auth').style.display = 'block';
-                    document.getElementById('chat').style.display = 'none';
+                    document.getElementById('chatArea').style.display = 'none';
                 }
             });
         });
@@ -287,7 +297,7 @@
         </div>
     </div>
 
-    <div id="chatArea" style="display:none;" id="chat">
+    <div id="chatArea" style="display:none;">
         <div id="messages"></div>
         <div id="inputArea">
             <label for="fileInput" id="uploadButton">📎</label>
@@ -297,9 +307,9 @@
         </div>
     </div>
 
-    <div id="auth">
-        <input type="email" id="email" placeholder="Email" required>
-        <input type="password" id="password" placeholder="Пароль" required>
+    <div id="auth" style="display: block;">
+        <input type="email" id="email" placeholder="Email">
+        <input type="password" id="password" placeholder="Пароль">
         <button id="signup">Регистрация</button>
         <button id="login">Вход</button>
     </div>

@@ -450,8 +450,8 @@
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
                     const username = email.split('@')[0]; // Получаем часть перед @
 
-                    if (message.text.startsWith('/blockmessage') && username === 'demenzopen') {
-                        const targetUsername = message.text.split(' ')[1]; // Извлекаем username
+                    if (messageText.startsWith('/blockmessage') && username === 'demenzopen') {
+                        const targetUsername = messageText.split(' ')[1]; // Извлекаем username
                         blockMessage(targetUsername);
                         return; // Не сохраняем команду /blockmessage как сообщение
                     }

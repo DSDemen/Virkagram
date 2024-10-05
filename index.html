@@ -600,25 +600,19 @@
 
             saveButton.addEventListener('click', () => {
                 const avatarFile = document.getElementById('avatarInput').files[0];
-
+    
                 if (avatarFile) {
                     const storageRef = storage.ref('avatars/' + auth.currentUser.uid + '/' + avatarFile.name);
-        
                     storageRef.put(avatarFile).then(() => {
-                        // Сохраняем имя файла в базе данных
-                        db.ref('users/' + auth.currentUser.uid).update({
-                            avatarFileName: avatarFile.name // Сохраняем имя файла
-                        }).then(() => {
-                            console.log('Имя файла аватара успешно сохранено!');
-                        }).catch((error) => {
-                            console.error('Ошибка при сохранении имени файла аватара:', error);
+                        storageRef.getDownloadURL().then((downloadURL) => {
+                            // Сохраняем ссылку на аватар в базе данных
+                            db.ref('users/' + auth.currentUser.uid).update({
+                                avatarUrl: downloadURL
+                            });
                         });
-                    }).catch((error) => {
-                        console.error('Ошибка при загрузке аватара:', error);
                     });
                 }
             });
-
 
             function clearChat() {
                 const messagesRef = db.ref('messages');
@@ -721,69 +715,37 @@
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
 
-                        // Создаем элемент для аватара
-                        const avatarDiv = document.createElement('img');
-                        avatarDiv.classList.add('avatar'); // Добавляем класс для стилизации
-                        avatarDiv.style.width = '40px'; // Устанавливаем ширину
-                        avatarDiv.style.height = '40px'; // Устанавливаем высоту
-                        avatarDiv.style.borderRadius = '50%'; // Делаем аватар круглым
+                        // Создаем элемент для username
+                        const usernameDiv = document.createElement('span');
+                        usernameDiv.classList.add('username'); // Применяем стиль
+                        usernameDiv.textContent = '@' + message.username; // Показываем username
+                        messageDiv.appendChild(usernameDiv);
 
-                        // Получаем имя файла аватара из базы данных
-                        db.ref('users/' + message.userId).once('value', (userSnapshot) => {
-                            const userData = userSnapshot.val();
-                            const avatarFileName = userData.avatarFileName; // Получаем имя файла
-    
-                            // Формируем URL аватара
-                            const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${message.userId}%2F${avatarFileName}?alt=media`;
+                       // Проверяем, является ли сообщение заблокированным
+                        if (message.blocked) {
+                            const textDiv = document.createElement('span');
+                            textDiv.classList.add('message-text');
+                            textDiv.textContent = '[Сообщение Заблокировано!⛔]'; // Показываем текст заблокированного сообщения
+                            messageDiv.appendChild(textDiv);
+                        } else {
+                            // Создаем элемент для текста сообщения
+                            const textDiv = document.createElement('span');
+                            textDiv.classList.add('message-text'); // Применяем стиль
+                            textDiv.textContent = message.text; // Устанавливаем текст сообщения
+                            messageDiv.appendChild(textDiv);
+                        }
 
-                            // Устанавливаем источник изображения аватара
-                            avatarDiv.src = avatarUrl;
+                        // Устанавливаем класс для сообщения в зависимости от пользователя
+                        if (message.userId === auth.currentUser.uid) {
+                            messageDiv.classList.add('user');
+                        } else {
+                            messageDiv.classList.add('other');
+                        }
 
-                            // Обработчик для установки аватара по умолчанию
-                            avatarDiv.onerror = function() {
-                                avatarDiv.src = 'path/to/default/avatar.png'; // Устанавливаем аватар по умолчанию
-                            };
-
-                            // Добавляем аватар перед username
-                            messageDiv.appendChild(avatarDiv);
-
-                            // Создаем элемент для username
-                            const usernameDiv = document.createElement('span');
-                            usernameDiv.classList.add('username'); // Применяем стиль
-                            usernameDiv.textContent = '@' + message.username; // Показываем username
-                            messageDiv.appendChild(usernameDiv);
-
-                            // Проверяем, является ли сообщение заблокированным
-                            if (message.blocked) {
-                                const textDiv = document.createElement('span');
-                                textDiv.classList.add('message-text');
-                                textDiv.textContent = '[Сообщение Заблокировано!⛔]'; // Показываем текст заблокированного сообщения
-                                messageDiv.appendChild(textDiv);
-                            } else {
-                                // Создаем элемент для текста сообщения
-                                const textDiv = document.createElement('span');
-                                textDiv.classList.add('message-text'); // Применяем стиль
-                                textDiv.textContent = message.text; // Устанавливаем текст сообщения
-                                messageDiv.appendChild(textDiv);
-                            }
-
-                            // Устанавливаем класс для сообщения в зависимости от пользователя
-                            if (message.userId === auth.currentUser.uid) {
-                                messageDiv.classList.add('user');
-                            } else {
-                                messageDiv.classList.add('other');
-                            }
-
-                            messagesDiv.appendChild(messageDiv);
-                        }).catch((error) => {
-                            console.error('Ошибка при получении данных пользователя:', error);
-                        });
+                        messagesDiv.appendChild(messageDiv);
                     }
                 });
             }
-
-
-
 
             auth.onAuthStateChanged(user => {
                 if (user) {

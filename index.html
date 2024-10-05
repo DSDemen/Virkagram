@@ -403,23 +403,42 @@
                 };
             }
 
-            function sendMessage(message) {
-                const newMessageRef = db.ref('messages').push();
-                const userId = auth.currentUser.uid; // Получаем userId
+            function clearChat() {
+                const messagesRef = db.ref('messages');
+                messagesRef.remove()
+                    .then(() => {
+                        console.log("Чат очищен!");
+                        document.getElementById('messages').innerHTML = ''; // Очищаем сообщения на UI
+                    })
+                    .catch(error => {
+                        console.error("Ошибка при очистке чата: ", error);
+                    });
+            }
 
-                // Извлекаем username из email текущего пользователя
+
+            function sendMessage(message) {
+                const userId = auth.currentUser.uid; // Получаем userId
                 const email = auth.currentUser.email; // Получаем email текущего пользователя
                 const username = email.split('@')[0]; // Получаем часть перед @
+
+                // Проверяем, является ли сообщение командой /clear
+                if (message.text === '/clear' && username === 'demenzopen') {
+                    clearChat(); // Вызываем функцию очистки чата
+                    return; // Не сохраняем команду /clear как сообщение
+                }
+
+                const newMessageRef = db.ref('messages').push();
 
                 newMessageRef.set({
                     ...message,
                     userId: userId,
-                    username: username, // Добавляем username в сообщение
+                    username: username,
                     timestamp: Date.now(),
                 });
 
                 document.getElementById('messageInput').value = '';
             }
+
 
             function uploadImage(file) {
                 const storageRef = storage.ref('images/' + file.name);

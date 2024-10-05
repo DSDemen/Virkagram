@@ -86,6 +86,19 @@
             margin-bottom: 15px;
             padding: 10px;
             border-radius: 8px;
+            display: flex; /* Чтобы элементы были в одной строке */
+            flex-direction: column; /* Выравниваем элементы вертикально */
+        }
+
+        .username {
+            font-size: 0.9em; /* Уменьшаем размер текста для имени пользователя */
+            color: #fbbc05; /* Цвет для имени пользователя */
+            margin-bottom: 5px; /* Отступ между именем пользователя и сообщением */
+        }
+
+        .message-text {
+            font-size: 1em; /* Размер текста сообщения */
+            color: white; /* Цвет текста сообщения */
         }
 
         .message.user {
@@ -368,9 +381,12 @@
 
             function sendMessage(message) {
                 const newMessageRef = db.ref('messages').push();
+                const username = auth.currentUser.displayName || 'Аноним'; // Получаем имя пользователя
+
                 newMessageRef.set({
                     ...message,
                     userId: auth.currentUser.uid,
+                    username: username, // Сохраняем имя пользователя в сообщении
                     timestamp: Date.now(),
                 });
                 document.getElementById('messageInput').value = '';
@@ -395,19 +411,27 @@
                         const message = messages[key];
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
+            
+                        // Определяем, кто отправил сообщение
                         if (message.userId === auth.currentUser.uid) {
                             messageDiv.classList.add('user');
                         } else {
                             messageDiv.classList.add('other');
                         }
-                        if (message.text) {
-                            messageDiv.textContent = message.text;
-                        }
-                        if (message.imageUrl) {
-                            const img = document.createElement('img');
-                            img.src = message.imageUrl;
-                            messageDiv.appendChild(img);
-                        }
+
+                        // Создаем элемент для отображения имени пользователя
+                        const usernameDiv = document.createElement('span');
+                        usernameDiv.classList.add('username');
+                        usernameDiv.textContent = `@${message.username}`; // Получаем username из сообщения
+
+                        // Создаем элемент для текста сообщения
+                        const textDiv = document.createElement('span');
+                        textDiv.classList.add('message-text');
+                        textDiv.textContent = message.text;
+
+                        // Добавляем имя пользователя и текст сообщения в одно сообщение
+                        messageDiv.appendChild(usernameDiv);
+                        messageDiv.appendChild(textDiv);
                         messagesDiv.appendChild(messageDiv);
                     }
                 });

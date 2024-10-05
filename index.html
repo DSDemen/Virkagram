@@ -653,7 +653,7 @@
             }
 
 
-            function sendMessage(message) {
+            function sendMessage() {
                 const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
                 if (messageText) { // Если текст не пустой
                     // Ваш код для отправки сообщения в Firebase
@@ -668,7 +668,7 @@
                     }
 
                     // Проверяем, является ли сообщение командой /clear
-                    if (message.text === '/clear' && username === 'demenzopen') {
+                    if (messageText.text === '/clear' && username === 'demenzopen') {
                         clearChat(); // Вызываем функцию очистки чата
                         return; // Не сохраняем команду /clear как сообщение
                     }

@@ -824,6 +824,7 @@
                         if (snapshot.exists() && snapshot.val().avatarUrl) {
                             avatarUrl = snapshot.val().avatarUrl; // Получаем avatarUrl из базы данных
                         }
+                    
 
                     // Добавьте это перед сохранением сообщения в Firebase
                     const date = new Date();
@@ -852,6 +853,7 @@
 
                     // Очищаем поле ввода
                     messageInput.value = '';
+                    });
                 } // Закрывающая скобка для if (messageText)
             } // Закрывающая скобка для функции sendMessage
 

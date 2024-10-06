@@ -753,22 +753,26 @@
                     const messagesDiv = document.getElementById('messages');
                     messagesDiv.innerHTML = '';
 
-                    // Предполагаем, что message.formattedDate уже содержит строку формата 'ddMMyyHHmm'
-                    const formattedDate = message.formattedDate;
-
-                    // Разбиваем строку на компоненты
-                    const day = formattedDate.slice(0, 2); // День
-                    const month = formattedDate.slice(2, 4); // Месяц
-                    const year = formattedDate.slice(4, 6); // Последние 2 цифры года
-                    const hours = formattedDate.slice(6, 8); // Часы
-                    const minutes = formattedDate.slice(8, 10); // Минуты
-
-                    // Форматируем в нужный вид 'dd.MM.yy HH:mm'
-                    const formattedDisplay = `${day}.${month}.${year} ${hours}:${minutes}`;
-
-
                     for (let key in messages) {
                         const message = messages[key];
+
+                        // Проверяем, есть ли formattedDate в текущем сообщении
+                        if (message.formattedDate) {
+                            // Разбиваем строку formattedDate на компоненты
+                            const formattedDate = message.formattedDate;
+                            const day = formattedDate.slice(0, 2); // День
+                            const month = formattedDate.slice(2, 4); // Месяц
+                            const year = formattedDate.slice(4, 6); // Последние 2 цифры года
+                            const hours = formattedDate.slice(6, 8); // Часы
+                            const minutes = formattedDate.slice(8, 10); // Минуты
+
+                            // Форматируем в нужный вид 'dd.MM.yy HH:mm'
+                            var formattedDisplay = `${day}.${month}.${year} ${hours}:${minutes}`;
+                        } else {
+                            // Если formattedDate отсутствует, можно задать значение по умолчанию
+                            var formattedDisplay = 'Неизвестная дата';
+                        }
+                        
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
 

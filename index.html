@@ -447,18 +447,18 @@
         let hasDateRendered = false;
 
         // Проверка поля "undermaint" в реальном времени
-        db.child('undermaint').on('value', (snapshot) => {
+        db.ref('undermaint').on('value', (snapshot) => {
             const isUnderMaintenance = snapshot.val();
-    
+
             if (isUnderMaintenance) {
                 // Если сайт на тех. работах, показываем экран
-                document.querySelector('.maintenance-screen').style.display = 'flex';
+                 document.querySelector('.maintenance-screen').style.display = 'flex';
             } else {
                 // Если тех. работ нет, скрываем экран и показываем сайт
                 document.querySelector('.maintenance-screen').style.display = 'none';
             }
         });
-
+        
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
             const logoutButton = document.getElementById('logoutButton'); // Получаем кнопку выхода

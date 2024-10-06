@@ -753,6 +753,20 @@
                     const messagesDiv = document.getElementById('messages');
                     messagesDiv.innerHTML = '';
 
+                    // Предполагаем, что message.formattedDate уже содержит строку формата 'ddMMyyHHmm'
+                    const formattedDate = message.formattedDate;
+
+                    // Разбиваем строку на компоненты
+                    const day = formattedDate.slice(0, 2); // День
+                    const month = formattedDate.slice(2, 4); // Месяц
+                    const year = formattedDate.slice(4, 6); // Последние 2 цифры года
+                    const hours = formattedDate.slice(6, 8); // Часы
+                    const minutes = formattedDate.slice(8, 10); // Минуты
+
+                    // Форматируем в нужный вид 'dd.MM.yy HH:mm'
+                    const formattedDisplay = `${day}.${month}.${year} ${hours}:${minutes}`;
+
+
                     for (let key in messages) {
                         const message = messages[key];
                         const messageDiv = document.createElement('div');
@@ -761,7 +775,7 @@
                         // Создаем элемент для username
                         const usernameDiv = document.createElement('span');
                         usernameDiv.classList.add('username'); // Применяем стиль
-                        usernameDiv.textContent = '@' + message.username + ' ' + message.formattedDate; // Показываем username
+                        usernameDiv.textContent = '@' + message.username + ' ' + formattedDisplay; // Показываем username
                         messageDiv.appendChild(usernameDiv);
 
                        // Проверяем, является ли сообщение заблокированным

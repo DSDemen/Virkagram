@@ -538,17 +538,9 @@
                 signupBtn.onclick = () => {
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
-                    const recaptchaResponse = grecaptcha.getResponse(); // Получаем ответ reCAPTCHA
-
-                    if (recaptchaResponse.length === 0) {
-                        alert("Пожалуйста, подтвердите, что вы не робот."); // Если reCAPTCHA не пройдена
-                        return;
-                    }
-
                     auth.createUserWithEmailAndPassword(email, password)
                         .then(() => {
                             alert("Регистрация успешна!");
-                            grecaptcha.reset(); // Сбросить reCAPTCHA после успешной регистрации
                         })
                         .catch(error => {
                             alert(error.message);
@@ -560,19 +552,11 @@
                 loginBtn.onclick = () => {
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
-                    const recaptchaResponse = grecaptcha.getResponse(); // Получаем ответ reCAPTCHA
-
-                    if (recaptchaResponse.length === 0) {
-                        alert("Пожалуйста, подтвердите, что вы не робот."); // Если reCAPTCHA не пройдена
-                        return;
-                    }
-
                     auth.signInWithEmailAndPassword(email, password)
                         .then(() => {
                             document.getElementById('auth').style.display = 'none';
-                            document.getElementById('chatArea').style.display = 'flex'; // Правильный ID
+                            document.getElementById('chatArea').style.display = 'flex'; // Corrected ID
                             loadMessages();
-                            grecaptcha.reset(); // Сбросить reCAPTCHA после успешного входа
                         })
                         .catch(error => {
                             alert(error.message);
@@ -927,7 +911,7 @@
         <h2>Вход / Регистрация</h2>
         <input type="email" id="email" placeholder="Введите Email" class="auth-input">
         <input type="password" id="password" placeholder="Введите Пароль" class="auth-input">
-        <div class="g-recaptcha" data-sitekey="6LdkRFkqAAAAAFG2TSiNfa6SF_jtT1esp2Cc0VlU"></div> <!-- Ваш ключ -->
+        <div class="g-recaptcha" data-sitekey="6LdkRFkqAAAAAPVex1XsmJvk4zHZ77bIoY-naqfy"></div> <!-- Ваш ключ -->
         <div class="auth-buttons">
             <button id="signup" class="auth-button">Регистрация</button>
             <button id="login" class="auth-button">Вход</button>

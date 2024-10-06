@@ -421,6 +421,13 @@
             font-size: 24px;
             color: #fff;
         }
+        .avatar {
+            width: 40px; /* Ширина аватара */
+            height: 40px; /* Высота аватара */
+            border-radius: 50%; /* Круглый аватар */
+            margin-right: 8px; /* Отступ между аватаром и текстом */
+            vertical-align: middle; /* Выравнивание по вертикали */
+        }
 
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -812,6 +819,12 @@
                         return; // Не сохраняем команду /clear как сообщение
                     }
 
+                    let avatarUrl = '';
+                    db.ref('users/' + userId).once('value').then((snapshot) => {
+                        if (snapshot.exists() && snapshot.val().avatarUrl) {
+                            avatarUrl = snapshot.val().avatarUrl; // Получаем avatarUrl из базы данных
+                        }
+
                     // Добавьте это перед сохранением сообщения в Firebase
                     const date = new Date();
                     const day = String(date.getDate()).padStart(2, '0');
@@ -834,6 +847,7 @@
                         timestamp: Date.now(),
                         formattedDate: formattedDate, // Добавляем отформатированную дату
                         siteVersion: siteversion,
+                        avatarUrl: avatarUrl, // Сохраняем ссылку на аватар
                     });
 
                     // Очищаем поле ввода
@@ -891,6 +905,14 @@
                         
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
+
+                        // Создаем элемент для аватара
+                        if (message.avatarUrl) {
+                            const avatarImg = document.createElement('img');
+                            avatarImg.src = message.avatarUrl; // URL аватара
+                            avatarImg.classList.add('avatar'); // Добавляем класс для стилизации
+                            messageDiv.appendChild(avatarImg); // Добавляем аватар к сообщению
+                        }
 
                         // Создаем элемент для username
                         const usernameDiv = document.createElement('span');

@@ -379,8 +379,10 @@
         .custom-file-input::file-selector-button:hover {
             background-color: #1e5bb8;
         }
-
-
+        .message-date {
+            color: #007bff; /* Установите желаемый цвет, например, синий */
+            font-weight: bold; /* Опционально: сделать текст жирным */
+        }
 
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -779,8 +781,14 @@
                         // Создаем элемент для username
                         const usernameDiv = document.createElement('span');
                         usernameDiv.classList.add('username'); // Применяем стиль
-                        usernameDiv.textContent = '@' + message.username + ' ' + formattedDisplay; // Показываем username
+                        usernameDiv.textContent = '@' + message.username; // Показываем username
                         messageDiv.appendChild(usernameDiv);
+
+                        // Создаем элемент для даты
+                        const dateDiv = document.createElement('span');
+                        dateDiv.classList.add('message-date'); // Применяем новый стиль для даты
+                        dateDiv.textContent = formattedDisplay; // Устанавливаем отформатированную дату
+                        messageDiv.appendChild(dateDiv); // Добавляем дату к сообщению
 
                        // Проверяем, является ли сообщение заблокированным
                         if (message.blocked) {

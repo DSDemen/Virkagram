@@ -708,17 +708,18 @@
             });
 
             saveButton.addEventListener('click', () => {
-                const avatarFile = document.getElementById('avatarInput').files[0];
-    
+                const avatarFile = avatarInput.files[0];
+                const username = auth.currentUser.email.split('@')[0]; // Получаем username из email
+
                 if (avatarFile) {
-                    const storageRef = storage.ref('avatars/' + auth.currentUser.uid + '/' + avatarFile.name);
+                    const storageRef = storage.ref('avatars/' + username + '.png'); // Формируем имя файла по username
+        
                     storageRef.put(avatarFile).then(() => {
-                        storageRef.getDownloadURL().then((downloadURL) => {
-                            // Сохраняем ссылку на аватар в базе данных
-                            db.ref('users/' + auth.currentUser.uid).update({
-                                avatarUrl: downloadURL
-                            });
-                        });
+                        // Генерируем URL для доступа к аватару
+                        const downloadURL = `https://firebasestorage.googleapis.com/v0/b/${storage.bucket}.appspot.com/o/avatars%2F${username}.png?alt=media`;
+                        alert('Avatar uploaded successfully! URL: ' + downloadURL);
+                    }).catch((error) => {
+                        console.error('Error uploading avatar: ', error);
                     });
                 }
             });
@@ -819,13 +820,6 @@
                         return; // Не сохраняем команду /clear как сообщение
                     }
 
-                    let avatarUrl = '';
-                    db.ref('users/' + userId).once('value').then((snapshot) => {
-                        if (snapshot.exists() && snapshot.val().avatarUrl) {
-                            avatarUrl = snapshot.val().avatarUrl; // Получаем avatarUrl из базы данных
-                        }
-                    
-
                     // Добавьте это перед сохранением сообщения в Firebase
                     const date = new Date();
                     const day = String(date.getDate()).padStart(2, '0');
@@ -848,12 +842,10 @@
                         timestamp: Date.now(),
                         formattedDate: formattedDate, // Добавляем отформатированную дату
                         siteVersion: siteversion,
-                        avatarUrl: avatarUrl, // Сохраняем ссылку на аватар
                     });
 
                     // Очищаем поле ввода
                     messageInput.value = '';
-                    });
                 } // Закрывающая скобка для if (messageText)
             } // Закрывающая скобка для функции sendMessage
 
@@ -908,13 +900,14 @@
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
 
+                        // Генерируем URL аватара на основе username
+                        const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/${storage.bucket}.appspot.com/o/avatars%2F${message.username}.png?alt=media`;
+
                         // Создаем элемент для аватара
-                        if (message.avatarUrl) {
-                            const avatarImg = document.createElement('img');
-                            avatarImg.src = message.avatarUrl; // URL аватара
-                            avatarImg.classList.add('avatar'); // Добавляем класс для стилизации
-                            messageDiv.appendChild(avatarImg); // Добавляем аватар к сообщению
-                        }
+                        const avatarImg = document.createElement('img');
+                        avatarImg.src = avatarUrl; // Устанавливаем сгенерированный URL
+                        avatarImg.classList.add('avatar'); // Добавляем класс для стилизации
+                        messageDiv.appendChild(avatarImg); // Добавляем аватар к сообщению
 
                         // Создаем элемент для username
                         const usernameDiv = document.createElement('span');

@@ -90,6 +90,16 @@
             flex-direction: column; /* Выравниваем элементы вертикально */
         }
 
+        /* Стиль для изображений в сообщениях */
+        .message .message-image {
+            max-width: 100%; /* Изображение будет масштабироваться под размер сообщения */
+            height: auto; /* Поддержка пропорций изображения */
+            border-radius: 5px; /* Закругление углов для изображений */
+            margin-top: 10px; /* Отступ сверху от текста до изображения */
+            display: block; /* Изображение отображается как блочный элемент */
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Небольшая тень для улучшения визуального эффекта */
+        }
+
         .username {
             font-size: 0.9em; /* Уменьшаем размер текста для имени пользователя */
             color: #fbbc05; /* Цвет для имени пользователя */
@@ -704,7 +714,7 @@
                 });
             }
 
-            function sendMessage() {
+            function sendMessage({ imageUrl = '' } = {}) {
                  const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
 
                 if (messageText) { // Если текст не пустой
@@ -761,6 +771,7 @@
 
                     newMessageRef.set({
                         text: messageText,
+                        imageUrl: imageUrl, // URL изображения, если есть
                         userId: userId,
                         username: username,
                         timestamp: Date.now(),
@@ -784,11 +795,14 @@
 
             function uploadImage(file) {
                 const storageRef = storage.ref('images/' + file.name);
-                storageRef.put(file).then(() => {
-                    storageRef.getDownloadURL().then((downloadURL) => {
-                        sendMessage({ imageUrl: downloadURL });
+                storageRef.put(file)
+                    .then(() => storageRef.getDownloadURL())
+                    .then((downloadURL) => {
+                        sendMessage({ imageUrl: downloadURL }); // Передаем URL изображения
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка при загрузке изображения:', error);
                     });
-                });
             }
 
             function loadMessages() {
@@ -832,6 +846,13 @@
                             dateDiv.classList.add('message-date'); // Применяем новый стиль для даты
                             dateDiv.textContent = formattedDisplay; // Устанавливаем отформатированную дату
                             messageDiv.appendChild(dateDiv); // Добавляем дату к сообщению
+                        }
+
+                        if (message.imageUrl) {
+                            const imageElement = document.createElement('img');
+                            imageElement.src = message.imageUrl;
+                            imageElement.classList.add('message-image'); // Добавляем стиль для изображений
+                            messageDiv.appendChild(imageElement);
                         }
 
                        // Проверяем, является ли сообщение заблокированным

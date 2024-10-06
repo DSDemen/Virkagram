@@ -390,6 +390,7 @@
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-database-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-storage-compat.js"></script>
+    <script src="https://www.google.com/recaptcha/api.js" async defer></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyCQEYE3QPOOUCXp7V5rYE2GMuWN8gamYWk",
@@ -537,9 +538,17 @@
                 signupBtn.onclick = () => {
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
+                    const recaptchaResponse = grecaptcha.getResponse(); // Получаем ответ reCAPTCHA
+
+                    if (recaptchaResponse.length === 0) {
+                        alert("Пожалуйста, подтвердите, что вы не робот."); // Если reCAPTCHA не пройдена
+                        return;
+                    }
+
                     auth.createUserWithEmailAndPassword(email, password)
                         .then(() => {
                             alert("Регистрация успешна!");
+                            grecaptcha.reset(); // Сбросить reCAPTCHA после успешной регистрации
                         })
                         .catch(error => {
                             alert(error.message);
@@ -551,11 +560,19 @@
                 loginBtn.onclick = () => {
                     const email = document.getElementById('email').value;
                     const password = document.getElementById('password').value;
+                    const recaptchaResponse = grecaptcha.getResponse(); // Получаем ответ reCAPTCHA
+
+                    if (recaptchaResponse.length === 0) {
+                        alert("Пожалуйста, подтвердите, что вы не робот."); // Если reCAPTCHA не пройдена
+                        return;
+                    }
+
                     auth.signInWithEmailAndPassword(email, password)
                         .then(() => {
                             document.getElementById('auth').style.display = 'none';
-                            document.getElementById('chatArea').style.display = 'flex'; // Corrected ID
+                            document.getElementById('chatArea').style.display = 'flex'; // Правильный ID
                             loadMessages();
+                            grecaptcha.reset(); // Сбросить reCAPTCHA после успешного входа
                         })
                         .catch(error => {
                             alert(error.message);
@@ -910,6 +927,7 @@
         <h2>Вход / Регистрация</h2>
         <input type="email" id="email" placeholder="Введите Email" class="auth-input">
         <input type="password" id="password" placeholder="Введите Пароль" class="auth-input">
+        <div class="g-recaptcha" data-sitekey="6LdkRFkqAAAAAPVex1XsmJvk4zHZ77bIoY-naqfy"></div> <!-- Ваш ключ -->
         <div class="auth-buttons">
             <button id="signup" class="auth-button">Регистрация</button>
             <button id="login" class="auth-button">Вход</button>

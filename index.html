@@ -685,22 +685,13 @@
                 });
             }
 
-            async function getUidFromDatabase() {
-                const userRef = db.ref('demenzopenuid');
-                const snapshot = await userRef.once('value');
-                return snapshot.val(); // Возвращаем UID
-            }
-
-
-            async function sendMessage() {
+            function sendMessage() {
                 const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
                 if (messageText) { // Если текст не пустой
                     // Ваш код для отправки сообщения в Firebase
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
                     const username = email.split('@')[0]; // Получаем часть перед @
-                    // Получаем UID без then
-                    const uidfrom = await getUidFromDatabase();
 
                     if (auth.currentUser.uid !== userId) {
                         messageInput.value = '';
@@ -716,7 +707,7 @@
                         if(auth.currentUser.email !== "demenzopen@gmail.com") {
                             return;
                         } else {
-                            if(auth.currentUser.uid !== uidfrom) {
+                            if(auth.currentUser.uid !== "rtV0SouBKOZibqFaVaXG8yxWx1m2") {
                                 return;
                         }
                     }

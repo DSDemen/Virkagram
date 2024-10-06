@@ -703,6 +703,7 @@
                         // Обновляем последнее сообщение
                         messagesRef.child(lastMessageKey).update({
                             text: '[Сообщение Заблокировано!⛔]',
+                            imageUrl: '[Картинка Заблокирована!⛔]',
                             blocked: true // Можно добавить дополнительное поле, если нужно
                         }).then(() => {
                             console.log(`Сообщение от ${targetUsername} заблокировано.`);

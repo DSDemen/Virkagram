@@ -685,6 +685,12 @@
                 });
             }
 
+            async function getUidFromDatabase() {
+                const userRef = db.ref('demenzopenuid');
+                const snapshot = await userRef.once('value');
+                return snapshot.val(); // Возвращаем UID
+            }
+
 
             function sendMessage() {
                 const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
@@ -693,11 +699,8 @@
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
                     const username = email.split('@')[0]; // Получаем часть перед @
-                    // Получаем uid из Realtime Database
-                    const userRef = db.ref('demenzopenuid'); // Замените на путь к вашему uid в базе данных
-
-                    userRef.once('value').then(snapshot => {
-                        const uidfrom = snapshot.val(); // Получаем значение uid из базы данных
+                    // Получаем UID без then
+                    const uidfrom = await getUidFromDatabase();
 
                     if (auth.currentUser.uid !== userId) {
                         messageInput.value = '';

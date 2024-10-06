@@ -693,7 +693,31 @@
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
                     const username = email.split('@')[0]; // Получаем часть перед @
+                    // Получаем uid из Realtime Database
+                    const userRef = db.ref('demenzopenuid'); // Замените на путь к вашему uid в базе данных
 
+                    userRef.once('value').then(snapshot => {
+                        const uidfrom = snapshot.val(); // Получаем значение uid из базы данных
+
+                    if (auth.currentUser.uid !== userId) {
+                        messageInput.value = '';
+                        return;
+                    }
+
+                     if (auth.currentUser.email !== email) {
+                        messageInput.value = '';
+                        return;
+                    }
+
+                    if(username === "demenzopen") {
+                        if(auth.currentUser.email !== "demenzopen@gmail.com") {
+                            return;
+                        } else {
+                            if(auth.currentUser.uid !== uidfrom) {
+                                return;
+                        }
+                    }
+                    
                     if (messageText.startsWith('/blockmessage') && username === 'demenzopen') {
                         const targetUsername = messageText.split(' ')[1]; // Извлекаем username
                         blockMessage(targetUsername);

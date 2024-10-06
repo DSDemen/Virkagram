@@ -899,6 +899,7 @@
                         
                         const messageDiv = document.createElement('div');
                         messageDiv.classList.add('message');
+                        
 
                         // Генерируем URL аватара на основе username
                         const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${message.username}.png?alt=media`;
@@ -907,7 +908,15 @@
                         const avatarImg = document.createElement('img');
                         avatarImg.src = avatarUrl; // Устанавливаем сгенерированный URL
                         avatarImg.classList.add('avatar'); // Добавляем класс для стилизации
-                        messageDiv.appendChild(avatarImg); // Добавляем аватар к сообщению
+
+                        // Обработчик события для случая, если аватар не найден
+                        avatarImg.onerror = () => {
+                            avatarImg.src = 'https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2Fa.png?alt=media'; // Устанавливаем изображение по умолчанию
+                        };
+
+                        // Добавляем аватар к сообщению
+                        messageDiv.appendChild(avatarImg);
+                        
 
                         // Создаем элемент для username
                         const usernameDiv = document.createElement('span');

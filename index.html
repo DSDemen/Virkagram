@@ -716,7 +716,7 @@
         
                     storageRef.put(avatarFile).then(() => {
                         // Генерируем URL для доступа к аватару
-                        const downloadURL = `https://firebasestorage.googleapis.com/v0/b/${storage.bucket}.appspot.com/o/avatars%2F${username}.png?alt=media`;
+                        const downloadURL = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${username}.png?alt=media`;
                         alert('Avatar uploaded successfully! URL: ' + downloadURL);
                     }).catch((error) => {
                         console.error('Error uploading avatar: ', error);
@@ -901,7 +901,7 @@
                         messageDiv.classList.add('message');
 
                         // Генерируем URL аватара на основе username
-                        const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/${storage.bucket}.appspot.com/o/avatars%2F${message.username}.png?alt=media`;
+                        const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${message.username}.png?alt=media`;
 
                         // Создаем элемент для аватара
                         const avatarImg = document.createElement('img');

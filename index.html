@@ -700,15 +700,30 @@
                     });
 
                     if (lastMessageKey) {
-                        // Обновляем последнее сообщение
-                        messagesRef.child(lastMessageKey).update({
-                            text: '[Сообщение Заблокировано!⛔]',
-                            imageUrl: '[Картинка Заблокирована!⛔]',
-                            blocked: true // Можно добавить дополнительное поле, если нужно
-                        }).then(() => {
-                            console.log(`Сообщение от ${targetUsername} заблокировано.`);
+                        // Получаем текущее сообщение
+                        messagesRef.child(lastMessageKey).once('value').then((snapshot) => {
+                            const messageData = snapshot.val();
+
+                            // Формируем объект для обновления
+                            const updatedData = {
+                                text: '[Сообщение Заблокировано!⛔]',
+                                blocked: true // Поле для пометки сообщения как заблокированного
+                            };
+
+                            // Если в сообщении есть изображение, добавляем изменение поля imageUrl
+                            if (messageData.imageUrl) {
+                                updatedData.imageUrl = '[Картинка Заблокирована!⛔]';
+                            }
+
+                            // Обновляем сообщение
+                            messagesRef.child(lastMessageKey).update(updatedData)
+                            .then(() => {
+                                console.log(`Сообщение от ${targetUsername} заблокировано.`);
+                            }).catch((error) => {
+                                console.error("Ошибка при блокировке сообщения: ", error);
+                            });
                         }).catch((error) => {
-                            console.error("Ошибка при блокировке сообщения: ", error);
+                            console.error("Ошибка при получении сообщения: ", error);
                         });
                     } else {
                         console.log(`Сообщение от ${targetUsername} не найдено.`);
@@ -768,6 +783,7 @@
 
                     // Форматируем дату как строку в формате ddMMyyHHmm
                     const formattedDate = `${day}${month}${year}${hours}${minutes}`;
+                    const siteversion = "62";
 
                     const newMessageRef = db.ref('messages').push();
 
@@ -778,6 +794,7 @@
                         username: username,
                         timestamp: Date.now(),
                         formattedDate: formattedDate, // Добавляем отформатированную дату
+                        siteVersion: siteversion,
                     });
 
                     // Очищаем поле ввода

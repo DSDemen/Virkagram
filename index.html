@@ -421,9 +421,11 @@
 
             // Показать настройки при нажатии на кнопку
             settingsButton.addEventListener('click', (event) => {
-                event.preventDefault();
-                settingsArea.style.display = 'block';
-                chatArea.style.display = 'none'; // Скрываем чат, если открыт
+                if (chatArea.style.display === 'block') {
+                    event.preventDefault();
+                    settingsArea.style.display = 'block';
+                    chatArea.style.display = 'none'; // Скрываем чат, если открыт
+                }
             });
 
             changepassb.addEventListener('click', (event) => {

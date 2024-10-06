@@ -395,6 +395,32 @@
             font-weight: normal; /* Опционально: сделать текст жирным */
             font-size: 0.8em;
         }
+        /* Стиль для экрана технических работ */
+        .maintenance-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100vh;
+            background-color: #f2f2f2;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            z-index: 9999; /* Убедитесь, что элемент поверх всего */
+            font-family: Arial, sans-serif;
+        }
+
+        .maintenance-screen h1 {
+            font-size: 48px;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .maintenance-screen p {
+            font-size: 24px;
+            color: #666;
+        }
 
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -419,6 +445,19 @@
         const db = firebase.database();
         const storage = firebase.storage();
         let hasDateRendered = false;
+
+        // Проверка поля "undermaint" в реальном времени
+        db.child('undermaint').on('value', (snapshot) => {
+            const isUnderMaintenance = snapshot.val();
+    
+            if (isUnderMaintenance) {
+                // Если сайт на тех. работах, показываем экран
+                document.querySelector('.maintenance-screen').style.display = 'flex';
+            } else {
+                // Если тех. работ нет, скрываем экран и показываем сайт
+                document.querySelector('.maintenance-screen').style.display = 'none';
+            }
+        });
 
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
@@ -915,6 +954,10 @@
     </script>
 </head>
 <body>
+    <div class="maintenance-screen" style="display: none;">
+        <h1>Сайт на тех. работах</h1>
+        <p>Мы скоро вернемся!</p>
+    </div>
     <div id="sidebar">
         <button id="menuButton" class="menu-button">
             <div class="bar"></div>

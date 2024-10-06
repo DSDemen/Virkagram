@@ -406,7 +406,7 @@
         const auth = firebase.auth();
         const db = firebase.database();
         const storage = firebase.storage();
-        let hasDateRendered = true;
+        let hasDateRendered = false;
 
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
@@ -510,17 +510,20 @@
 
             // Обработчик события для кнопки выхода
             logoutButton.addEventListener('click', (event) => {
-                event.preventDefault(); // Предотвращаем переход по ссылке
-                auth.signOut() // Выход из аккаунта Firebase
-                    .then(() => {
-                        alert("Вы вышли из аккаунта!"); // Уведомление о выходе
-                         // Обновите интерфейс
-                        document.getElementById('auth').style.display = 'block';
-                        document.getElementById('chatArea').style.display = 'none';
-                    })
-                    .catch((error) => {
-                        console.error("Ошибка выхода: ", error);
-                    });
+                if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
+                    
+                    event.preventDefault(); // Предотвращаем переход по ссылке
+                    auth.signOut() // Выход из аккаунта Firebase
+                        .then(() => {
+                            alert("Вы вышли из аккаунта!"); // Уведомление о выходе
+                             // Обновите интерфейс
+                            document.getElementById('auth').style.display = 'block';
+                            document.getElementById('chatArea').style.display = 'none';
+                        })
+                        .catch((error) => {
+                            console.error("Ошибка выхода: ", error);
+                        });
+                }
             });
 
             
@@ -927,7 +930,7 @@
         <button id="changepass" class="custom-button">Изменить пароль</button>
     </div>
     <div class="setting-option">
-        <button id="daterenderb" class="custom-button">Показывать дату: true</button>
+        <button id="daterenderb" class="custom-button">Показывать дату: false</button>
     </div>
     <button id="saveSettings" class="custom-button">Сохранить</button>
 </div>

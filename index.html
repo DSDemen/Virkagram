@@ -421,7 +421,7 @@
 
             // Показать настройки при нажатии на кнопку
             settingsButton.addEventListener('click', (event) => {
-                if (chatArea.style.display === 'block') {
+                if (chatArea.style.display === 'flex') {
                     event.preventDefault();
                     settingsArea.style.display = 'block';
                     chatArea.style.display = 'none'; // Скрываем чат, если открыт

@@ -698,10 +698,21 @@
                     }
 
                     // Проверяем, является ли сообщение командой /clear
-                    if (messageText.text === '/clear' && username === 'demenzopen') {
+                    if (messageText === '/clear' && username === 'demenzopen') {
                         clearChat(); // Вызываем функцию очистки чата
                         return; // Не сохраняем команду /clear как сообщение
                     }
+
+                    // Добавьте это перед сохранением сообщения в Firebase
+                    const date = new Date();
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // месяцы начинаются с 0
+                    const year = String(date.getFullYear()).slice(2); // последние две цифры года
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                    // Форматируем дату как строку в формате ddMMyyHHmm
+                    const formattedDate = `${day}${month}${year}${hours}${minutes}`;
 
                     const newMessageRef = db.ref('messages').push();
 
@@ -710,6 +721,7 @@
                         userId: userId,
                         username: username,
                         timestamp: Date.now(),
+                        formattedDate: formattedDate, // Добавляем отформатированную дату
                     });
 
                     // Очищаем поле ввода
@@ -749,7 +761,7 @@
                         // Создаем элемент для username
                         const usernameDiv = document.createElement('span');
                         usernameDiv.classList.add('username'); // Применяем стиль
-                        usernameDiv.textContent = '@' + message.username; // Показываем username
+                        usernameDiv.textContent = '@' + message.username + ' ' + message.formattedDate; // Показываем username
                         messageDiv.appendChild(usernameDiv);
 
                        // Проверяем, является ли сообщение заблокированным

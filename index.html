@@ -406,6 +406,7 @@
         const auth = firebase.auth();
         const db = firebase.database();
         const storage = firebase.storage();
+        let hasDateRendered = true;
 
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');
@@ -501,6 +502,12 @@
                 sidebar.classList.toggle('open'); // Добавляем/убираем класс для открытия меню
             });
 
+            document.getElementById('daterenderb').addEventListener('click', function() {
+                hasDateRendered = !hasDateRendered; // Меняем значение переменной
+                updateButtonText(); // Обновляем текст кнопки
+            });
+
+
             // Обработчик события для кнопки выхода
             logoutButton.addEventListener('click', (event) => {
                 event.preventDefault(); // Предотвращаем переход по ссылке
@@ -563,6 +570,11 @@
                     }
                 };
             }
+
+            function updateButtonText() {
+                    const button = document.getElementById('daterenderb'); // Получаем элемент кнопки
+                    button.textContent = `Показывать дату: ${hasDateRendered}`; // Устанавливаем текст кнопки
+            }
             
             function applyTheme(theme) {
                 if (theme === 'chai') {
@@ -622,6 +634,7 @@
                 // Вернуть пользователя обратно в чат
                 settingsArea.style.display = 'none';
                 chatArea.style.display = 'flex';
+                loadMessages();
             });
 
             // Загружаем тему при загрузке страницы
@@ -807,11 +820,13 @@
                         usernameDiv.textContent = '@' + message.username; // Показываем username
                         messageDiv.appendChild(usernameDiv);
 
-                        // Создаем элемент для даты
-                        const dateDiv = document.createElement('span');
-                        dateDiv.classList.add('message-date'); // Применяем новый стиль для даты
-                        dateDiv.textContent = formattedDisplay; // Устанавливаем отформатированную дату
-                        messageDiv.appendChild(dateDiv); // Добавляем дату к сообщению
+                        if (hasDateRendered === true) {
+                            // Создаем элемент для даты
+                            const dateDiv = document.createElement('span');
+                            dateDiv.classList.add('message-date'); // Применяем новый стиль для даты
+                            dateDiv.textContent = formattedDisplay; // Устанавливаем отформатированную дату
+                            messageDiv.appendChild(dateDiv); // Добавляем дату к сообщению
+                        }
 
                        // Проверяем, является ли сообщение заблокированным
                         if (message.blocked) {
@@ -844,6 +859,7 @@
                     document.getElementById('auth').style.display = 'none';
                     document.getElementById('chatArea').style.display = 'flex';
                     loadMessages();
+                    updateButtonText();
                 } else {
                     document.getElementById('auth').style.display = 'block';
                     document.getElementById('chatArea').style.display = 'none';
@@ -909,6 +925,9 @@
     </div>
     <div class="setting-option">
         <button id="changepass" class="custom-button">Изменить пароль</button>
+    </div>
+    <div class="setting-option">
+        <button id="daterenderb" class="custom-button">Показывать дату: true</button>
     </div>
     <button id="saveSettings" class="custom-button">Сохранить</button>
 </div>

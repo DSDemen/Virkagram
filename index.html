@@ -428,6 +428,19 @@
             margin-right: 8px; /* Отступ между аватаром и текстом */
             vertical-align: middle; /* Выравнивание по вертикали */
         }
+        /* Стили для input */
+        .custom-input {
+            padding: 10px 20px;
+            border: 2px solid #2f80ed;
+            border-radius: 5px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        .custom-input:focus {
+            border-color: #1e5bb8;
+            outline: none;
+        }
 
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -476,6 +489,7 @@
             const chatArea = document.getElementById('chatArea');
             const settingsArea = document.getElementById('settingsArea');
             const changepassb = document.getElementById('changepass');
+            const customInputField = document.getElementById('custom-input-field');
 
             // Показать настройки при нажатии на кнопку
             settingsButton.addEventListener('click', (event) => {
@@ -724,6 +738,16 @@
                 }
             });
 
+            saveButton.addEventListener('click', () => {
+                const customNickname = customInputField.value.trim(); // Получаем текст из input
+
+                if (customNickname) {
+                    // Добавьте проверку и действия, связанные с никнеймом
+                    console.log(`Сохранен никнейм: ${customNickname}`);
+                }
+            });
+
+
             function clearChat() {
                 const messagesRef = db.ref('messages');
                 messagesRef.remove()
@@ -780,12 +804,13 @@
 
             function sendMessage({ imageUrl = '' } = {}) {
                  const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
+                 const customNickname = customInputField.value.trim(); // Получаем никнейм из поля input
 
                 if (messageText) { // Если текст не пустой
                     // Ваш код для отправки сообщения в Firebase
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
-                    const username = email.split('@')[0]; // Получаем часть перед @
+                    const username = (customNickname ? "C" + customNickname : email.split('@')[0]); // Получаем часть перед @
 
                     if (auth.currentUser.uid !== userId) {
                         messageInput.value = '';
@@ -1055,6 +1080,9 @@
     </div>
     <div class="setting-option">
         <button id="daterenderb" class="custom-button">Показывать дату: false</button>
+    </div>
+    <div class="setting-option">
+        <input type="text" id="custom-input-field" class="custom-input" placeholder="Введите текст...">
     </div>
     <button id="saveSettings" class="custom-button">Сохранить</button>
 </div>

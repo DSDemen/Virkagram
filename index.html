@@ -740,9 +740,11 @@
 
             saveButton.addEventListener('click', () => {
                 const customNickname = customInputField.value.trim(); // Получаем текст из input
+                const username2 = auth.currentUser.email.split('@')[0];
 
-                if (customNickname) {
+                if (customNickname && customNickname !== username2) {
                     // Добавьте проверку и действия, связанные с никнеймом
+                    alert(`Выбран Username: ${customNickname}`);
                     console.log(`Сохранен никнейм: ${customNickname}`);
                 }
             });
@@ -1082,7 +1084,7 @@
         <button id="daterenderb" class="custom-button">Показывать дату: false</button>
     </div>
     <div class="setting-option">
-        <input type="text" id="custom-input-field" class="custom-input" placeholder="Введите текст...">
+        <input type="text" id="custom-input-field" class="custom-input" placeholder="Введите Username...">
     </div>
     <button id="saveSettings" class="custom-button">Сохранить</button>
 </div>

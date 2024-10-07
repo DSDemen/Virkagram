@@ -76,6 +76,15 @@
             border-left: 1px solid #333;
         }
 
+        /* Основная область чата */
+        #pinnedChatArea {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: #121212;
+            border-left: 1px solid #333;
+        }
+
         #messages {
             flex-grow: 1;
             padding: 20px;
@@ -151,7 +160,25 @@
             outline: none;
         }
 
+        #messageInputp {
+            flex-grow: 1;
+            padding: 10px;
+            border: none;
+            border-radius: 8px;
+            margin-right: 10px;
+            background-color: #333;
+            color: white;
+        }
+
+        #messageInputp:focus {
+            outline: none;
+        }
+
         #fileInput {
+            display: none;
+        }
+
+        #fileInputp {
             display: none;
         }
 
@@ -163,8 +190,19 @@
             color: #121212;
             cursor: pointer;
         }
+        #sendButtonp {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            background-color: #fbbc05;
+            color: #121212;
+            cursor: pointer;
+        }
 
         #sendButton:hover {
+            background-color: #e0a600;
+        }
+        #sendButtonp:hover {
             background-color: #e0a600;
         }
 
@@ -178,6 +216,17 @@
         }
 
         #uploadButton:hover {
+            background-color: #555;
+        }
+        #uploadButtonp {
+            padding: 10px;
+            background-color: #444;
+            border-radius: 8px;
+            margin-right: 10px;
+            cursor: pointer;
+        }
+
+        #uploadButtonp:hover {
             background-color: #555;
         }
         
@@ -501,9 +550,9 @@
             const customInputField = document.getElementById('custom-input-field');
 
             //Кнопки чатов:
-            pinned.addEventListener('click', () => {
+            globalChat.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
-                    chatArea.style.display = 'block';
+                    chatArea.style.display = 'flex';
                     pinnedChatArea.style.display = 'none';
                 }
             });
@@ -511,7 +560,7 @@
             pinned.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
                     chatArea.style.display = 'none';
-                    pinnedChatArea.style.display = 'block';
+                    pinnedChatArea.style.display = 'flex';
                // loadPinnedMessages(); // Загружаем сообщения для чата Избранное
                 }
             });

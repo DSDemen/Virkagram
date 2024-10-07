@@ -91,6 +91,12 @@
             overflow-y: auto;
         }
 
+        #messagesp {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
         .message {
             margin-bottom: 15px;
             padding: 10px;
@@ -140,6 +146,13 @@
         }
 
         #inputArea {
+            display: flex;
+            padding: 15px;
+            background-color: #1e1e1e;
+            border-top: 1px solid #333;
+        }
+
+        #inputAreap {
             display: flex;
             padding: 15px;
             background-color: #1e1e1e;
@@ -1138,7 +1151,7 @@
     </div>
     <div id="pinnedChatArea" class="chatArea" style="display: none;">
         <!-- Контент чата Избранное (приватные сообщения) -->
-        <div id="pinnedMessages"></div>
+        <div id="messagesp"></div>
         <div id="inputAreap">
             <label for="fileInputp" id="uploadButtonp">📎</label>
             <input type="file" id="fileInputp" accept="image/*">

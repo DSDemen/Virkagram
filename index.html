@@ -822,7 +822,7 @@
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
                     const username = (customNickname ? "[C] " + customNickname : email.split('@')[0]); // Получаем часть перед @
-                    const trueusername = email.split('@')[0]);
+                    const trueusername = email.split('@')[0];
 
                     if (auth.currentUser.uid !== userId) {
                         messageInput.value = '';

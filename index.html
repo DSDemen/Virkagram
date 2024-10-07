@@ -475,7 +475,7 @@
 
         db.ref('undermaint').on('value', (snapshot) => {
             const isUnderMaintenance = snapshot.val();
-            console.log('Значение undermaint:', isUnderMaintenance); // Добавлено для отладки
+           // console.log('Значение undermaint:', isUnderMaintenance); // Добавлено для отладки
 
             if (isUnderMaintenance) {
                 // Если сайт на тех. работах, показываем экран
@@ -1048,9 +1048,13 @@
 
         <h2>Віркаграм</h2>
         <div id="chatList">
-            <div class="chatItem">
+            <div class="chatItem" id="globalChat">
                 <img src="v.jpg" alt="Chat Icon">
                 <div class="name">Глобальный чат</div>
+            </div>
+            <div class="chatItem" id="pinned">
+                <img src="bm.jpg" alt="bm Icon">
+                <div class="name">Избранное</div>
             </div>
         </div>
     </div>

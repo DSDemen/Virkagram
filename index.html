@@ -441,6 +441,13 @@
             border-color: #1e5bb8;
             outline: none;
         }
+        
+        .custom-label {
+            display: block;
+            font-size: 16px;
+            color: #2f80ed;
+            margin-bottom: 5px;
+        }
 
     </style>
     <script src="https://www.gstatic.com/firebasejs/9.15.0/firebase-app-compat.js"></script>
@@ -746,6 +753,8 @@
                     // Добавьте проверку и действия, связанные с никнеймом
                     alert(`Выбран Username: ${customNickname}`);
                     console.log(`Сохранен никнейм: ${customNickname}`);
+                } else {
+                    document.getElementById('custom-input-field').value = '';
                 }
             });
 
@@ -812,7 +821,7 @@
                     // Ваш код для отправки сообщения в Firebase
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
-                    const username = (customNickname ? "C" + customNickname : email.split('@')[0]); // Получаем часть перед @
+                    const username = (customNickname ? "C|" + customNickname : email.split('@')[0]); // Получаем часть перед @
 
                     if (auth.currentUser.uid !== userId) {
                         messageInput.value = '';
@@ -1084,6 +1093,8 @@
         <button id="daterenderb" class="custom-button">Показывать дату: false</button>
     </div>
     <div class="setting-option">
+        <label for="custom-input-field" class="custom-label">Введите никнейм:</label>
+        <label for="custom-input-field" class="custom-label">(Если нужен обычный, оставь пустым.)</label>
         <input type="text" id="custom-input-field" class="custom-input" placeholder="Введите Username...">
     </div>
     <button id="saveSettings" class="custom-button">Сохранить</button>

@@ -500,18 +500,15 @@
             const changepassb = document.getElementById('changepass');
             const customInputField = document.getElementById('custom-input-field');
 
-            const gcb = document.querySelector('globalChat');  // Глобальный чат
-            const pb = document.getElementById('pinned');  // Избранное pinnedChatArea
-
             //Кнопки чатов:
-            gcb.addEventListener('click', () => {
+            pinned.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
                     chatArea.style.display = 'block';
                     pinnedChatArea.style.display = 'none';
                 }
             });
 
-            pb.addEventListener('click', () => {
+            pinned.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
                     chatArea.style.display = 'none';
                     pinnedChatArea.style.display = 'block';

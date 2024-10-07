@@ -846,6 +846,10 @@
 
                     // Очищаем поле ввода
                     messageInput.value = '';
+                    fileInput.value = '';
+                    previewImage.src = ''; // Убираем источник изображения
+                    previewImage.style.display = 'none'; // Скрываем изображение
+                    removeImageButton.style.display = 'none'; // Скрываем кнопку удаления
                 } // Закрывающая скобка для if (messageText)
             } // Закрывающая скобка для функции sendMessage
 
@@ -854,7 +858,14 @@
             messageInput.addEventListener('keydown', (event) => {
                 if (event.key === 'Enter') { // Проверяем, нажата ли клавиша "Enter"
                     event.preventDefault(); // Отменяем стандартное поведение (например, переход на новую строку)
-                    sendMessage(); // Вызываем функцию отправки сообщения
+                    const message = document.getElementById('messageInput').value;
+                    const fileInput = document.getElementById('fileInput');
+
+                    if (fileInput.files[0]) {
+                        uploadImage(fileInput.files[0]);
+                    } else {
+                        sendMessage();
+                    }
                 }
             });
 

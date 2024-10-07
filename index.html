@@ -445,7 +445,7 @@
         .custom-label {
             display: block;
             font-size: 16px;
-            color: #2f80ed;
+            color: #ffffff;
             margin-bottom: 5px;
         }
 
@@ -821,7 +821,8 @@
                     // Ваш код для отправки сообщения в Firebase
                     const userId = auth.currentUser.uid; // Получаем userId
                     const email = auth.currentUser.email; // Получаем email текущего пользователя
-                    const username = (customNickname ? "C|" + customNickname : email.split('@')[0]); // Получаем часть перед @
+                    const username = (customNickname ? "[C] " + customNickname : email.split('@')[0]); // Получаем часть перед @
+                    const trueusername = email.split('@')[0]);
 
                     if (auth.currentUser.uid !== userId) {
                         messageInput.value = '';
@@ -878,6 +879,7 @@
                         timestamp: Date.now(),
                         formattedDate: formattedDate, // Добавляем отформатированную дату
                         siteVersion: siteversion,
+                        trueusername: trueusername,
                     });
 
                     // Очищаем поле ввода
@@ -949,7 +951,7 @@
                         
 
                         // Генерируем URL аватара на основе username
-                        const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${message.username}.png?alt=media`;
+                        const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${message.trueusername}.png?alt=media`;
 
                         // Создаем элемент для аватара
                         const avatarImg = document.createElement('img');

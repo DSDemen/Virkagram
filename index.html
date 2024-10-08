@@ -717,6 +717,7 @@
             const signupBtn = document.getElementById('signup');
             const loginBtn = document.getElementById('login');
             const sendBtn = document.getElementById('sendButton');
+            const sendBtnp = document.getElementById('sendButtonp');
 
             if (signupBtn) {
                 signupBtn.onclick = () => {
@@ -757,6 +758,18 @@
                         uploadImage(fileInput.files[0]);
                     } else {
                         sendMessage({ text: message });
+                    }
+                };
+            }
+            if (sendBtnp) {
+                sendBtnp.onclick = () => {
+                    const message = document.getElementById('messageInputp').value;
+                    const fileInput = document.getElementById('fileInputp');
+
+                    if (fileInput.files[0]) {
+                        uploadImagep(fileInput.files[0]);
+                    } else {
+                        sendMessagep({ text: message });
                     }
                 };
             }
@@ -919,6 +932,50 @@
                 });
             }
 
+            function sendMessagep({ imageUrl = '' } = {}) {
+                 const messageText = messageInputp.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
+
+                if (messageText) { // Если текст не пустой
+                    // Ваш код для отправки сообщения в Firebase
+                    const userId = auth.currentUser.uid; // Получаем userId
+                    const email = auth.currentUser.email; // Получаем email текущего пользователя
+                    const username = email.split('@')[0]; // Получаем часть перед @
+                    const trueusername = email.split('@')[0];
+
+                    // Добавьте это перед сохранением сообщения в Firebase
+                    const date = new Date();
+                    const day = String(date.getDate()).padStart(2, '0');
+                    const month = String(date.getMonth() + 1).padStart(2, '0'); // месяцы начинаются с 0
+                    const year = String(date.getFullYear()).slice(2); // последние две цифры года
+                    const hours = String(date.getHours()).padStart(2, '0');
+                    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+                    // Форматируем дату как строку в формате ddMMyyHHmm
+                    const formattedDate = `${day}${month}${year}${hours}${minutes}`;
+                    const siteversion = "62";
+
+                    const newMessageRef = db.ref(trueusername).push();
+
+                    newMessageRef.set({
+                        text: messageText,
+                        imageUrl: imageUrl, // URL изображения, если есть
+                        userId: userId,
+                        username: username,
+                        timestamp: Date.now(),
+                        formattedDate: formattedDate, // Добавляем отформатированную дату
+                        siteVersion: siteversion,
+                        trueusername: trueusername,
+                    });
+
+                    // Очищаем поле ввода
+                    messageInputp.value = '';
+                    fileInputp.value = '';
+                    previewImagep.src = ''; // Убираем источник изображения
+                    previewImagep.style.display = 'none'; // Скрываем изображение
+                    removeImagep.style.display = 'none'; // Скрываем кнопку удаления
+                } // Закрывающая скобка для if (messageText)
+            } // Закрывающая скобка для функции sendMessage
+
             function sendMessage({ imageUrl = '' } = {}) {
                  const messageText = messageInput.value.trim(); // Получаем текст сообщения и убираем лишние пробелы
                  const customNickname = customInputField.value.trim(); // Получаем никнейм из поля input
@@ -1020,6 +1077,17 @@
                     .then(() => storageRef.getDownloadURL())
                     .then((downloadURL) => {
                         sendMessage({ imageUrl: downloadURL }); // Передаем URL изображения
+                    })
+                    .catch((error) => {
+                        console.error('Ошибка при загрузке изображения:', error);
+                    });
+            }
+            function uploadImagep(file) {
+                const storageRef = storage.ref('imagesp/' + file.name);
+                storageRef.put(file)
+                    .then(() => storageRef.getDownloadURL())
+                    .then((downloadURL) => {
+                        sendMessagep({ imageUrl: downloadURL }); // Передаем URL изображения
                     })
                     .catch((error) => {
                         console.error('Ошибка при загрузке изображения:', error);

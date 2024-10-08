@@ -561,11 +561,12 @@
             const settingsArea = document.getElementById('settingsArea');
             const changepassb = document.getElementById('changepass');
             const customInputField = document.getElementById('custom-input-field');
+            const authArea = document.getElementById('auth');
 
             //Кнопки чатов:
             globalChat.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
-                    if (auth.style.display === 'none' || auth.style.display === '') {
+                    if (authArea.style.display === 'none' || authArea.style.display === '') {
                         chatArea.style.display = 'flex';
                         pinnedChatArea.style.display = 'none';
                     }
@@ -574,7 +575,7 @@
 
             pinned.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
-                    if (auth.style.display === 'none' || auth.style.display === '') {
+                    if (authArea.style.display === 'none' || authArea.style.display === '') {
                         chatArea.style.display = 'none';
                         pinnedChatArea.style.display = 'flex';
                        // loadPinnedMessages(); // Загружаем сообщения для чата Избранное

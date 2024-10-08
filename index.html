@@ -578,7 +578,7 @@
                     if (authArea.style.display === 'none' || authArea.style.display === '') {
                         chatArea.style.display = 'none';
                         pinnedChatArea.style.display = 'flex';
-                       // loadPinnedMessages(); // Загружаем сообщения для чата Избранное
+                        loadMessagesp(); // Загружаем сообщения для чата Избранное
                     }
                 }
             });
@@ -1092,6 +1092,101 @@
                     .catch((error) => {
                         console.error('Ошибка при загрузке изображения:', error);
                     });
+            }
+
+            function loadMessagesp() {
+                const trueusername = email.split('@')[0];
+                db.ref(`pinMessages/${trueusername}`).on('value', (snapshot) => {
+                    const messages = snapshot.val();
+                    const messagesDiv = document.getElementById('messagesp');
+                    messagesDiv.innerHTML = '';
+
+                    for (let key in messages) {
+                        const message = messages[key];
+
+                        // Проверяем, есть ли formattedDate в текущем сообщении
+                        if (message.formattedDate) {
+                            // Разбиваем строку formattedDate на компоненты
+                            const formattedDate = message.formattedDate;
+                            const day = formattedDate.slice(0, 2); // День
+                            const month = formattedDate.slice(2, 4); // Месяц
+                            const year = formattedDate.slice(4, 6); // Последние 2 цифры года
+                            const hours = formattedDate.slice(6, 8); // Часы
+                            const minutes = formattedDate.slice(8, 10); // Минуты
+
+                            // Форматируем в нужный вид 'dd.MM.yy HH:mm'
+                            var formattedDisplay = `${day}.${month}.${year} ${hours}:${minutes}`;
+                        } else {
+                            // Если formattedDate отсутствует, можно задать значение по умолчанию
+                            var formattedDisplay = 'Неизвестная дата';
+                        }
+                        
+                        const messageDiv = document.createElement('div');
+                        messageDiv.classList.add('message');
+                        
+
+                        // Генерируем URL аватара на основе username
+                        const avatarUrl = `https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2F${message.trueusername}.png?alt=media`;
+
+                        // Создаем элемент для аватара
+                        const avatarImg = document.createElement('img');
+                        avatarImg.src = avatarUrl; // Устанавливаем сгенерированный URL
+                        avatarImg.classList.add('avatar'); // Добавляем класс для стилизации
+
+                        // Обработчик события для случая, если аватар не найден
+                        avatarImg.onerror = () => {
+                            avatarImg.src = 'https://firebasestorage.googleapis.com/v0/b/virkogram.appspot.com/o/avatars%2Fa.png?alt=media'; // Устанавливаем изображение по умолчанию
+                        };
+
+                        // Добавляем аватар к сообщению
+                        messageDiv.appendChild(avatarImg);
+                        
+
+                        // Создаем элемент для username
+                        const usernameDiv = document.createElement('span');
+                        usernameDiv.classList.add('username'); // Применяем стиль
+                        usernameDiv.textContent = '@' + message.username; // Показываем username
+                        messageDiv.appendChild(usernameDiv);
+
+                        if (hasDateRendered === true) {
+                            // Создаем элемент для даты
+                            const dateDiv = document.createElement('span');
+                            dateDiv.classList.add('message-date'); // Применяем новый стиль для даты
+                            dateDiv.textContent = formattedDisplay; // Устанавливаем отформатированную дату
+                            messageDiv.appendChild(dateDiv); // Добавляем дату к сообщению
+                        }
+
+                        if (message.imageUrl) {
+                            const imageElement = document.createElement('img');
+                            imageElement.src = message.imageUrl;
+                            imageElement.classList.add('message-image'); // Добавляем стиль для изображений
+                            messageDiv.appendChild(imageElement);
+                        }
+
+                       // Проверяем, является ли сообщение заблокированным
+                        if (message.blocked) {
+                            const textDiv = document.createElement('span');
+                            textDiv.classList.add('message-text');
+                            textDiv.textContent = '[Сообщение Заблокировано!⛔]'; // Показываем текст заблокированного сообщения
+                            messageDiv.appendChild(textDiv);
+                        } else {
+                            // Создаем элемент для текста сообщения
+                            const textDiv = document.createElement('span');
+                            textDiv.classList.add('message-text'); // Применяем стиль
+                            textDiv.textContent = message.text; // Устанавливаем текст сообщения
+                            messageDiv.appendChild(textDiv);
+                        }
+
+                        // Устанавливаем класс для сообщения в зависимости от пользователя
+                        if (message.userId === auth.currentUser.uid) {
+                            messageDiv.classList.add('user');
+                        } else {
+                            messageDiv.classList.add('other');
+                        }
+
+                        messagesDiv.appendChild(messageDiv);
+                    }
+                });
             }
 
             function loadMessages() {

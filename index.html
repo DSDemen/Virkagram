@@ -1095,6 +1095,7 @@
             }
 
             function loadMessagesp() {
+                const email = auth.currentUser.email;
                 const trueusername = email.split('@')[0];
                 db.ref(`pinMessages/${trueusername}`).on('value', (snapshot) => {
                     const messages = snapshot.val();

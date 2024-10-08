@@ -954,7 +954,7 @@
                     const formattedDate = `${day}${month}${year}${hours}${minutes}`;
                     const siteversion = "62";
 
-                    const newMessageRef = db.ref(`privateMessages/${trueusername}`).push();
+                    const newMessageRef = db.ref(`pinMessages/${trueusername}`).push();
 
                     newMessageRef.set({
                         text: messageText,

@@ -535,6 +535,30 @@
         const storage = firebase.storage();
         let hasDateRendered = false;
 
+        firebase.auth().onAuthStateChanged(function(user) {
+              if (user) {
+                user.getIdToken(true).then(function(idToken) {
+                }).catch(function(error) {
+                  if (error.code === 'auth/user-disabled' || error.code === 'auth/user-not-found') {
+                    console.log('Аккаунт был удален или отключен.');
+                    alert('Аккаунт был удален или отключен.');
+                    firebase.auth().signOut().then(function() {
+                      logoutButton.click();
+                    }).catch(function(signOutError) {
+                      console.error('Ошибка при выходе из системы:', signOutError);
+                    });
+                  } else {
+                    console.error('Ошибка при проверке токена:', error);
+                  }
+                });
+              } else {
+                // Пользователь не авторизован, можно редиректить на страницу входа
+                console.log('Пользователь не авторизован');
+                logoutButton.click();
+              }
+        });
+
+
         db.ref('undermaint').on('value', (snapshot) => {
             const isUnderMaintenance = snapshot.val();
            // console.log('Значение undermaint:', isUnderMaintenance); // Добавлено для отладки

@@ -1071,6 +1071,20 @@
                 }
             });
 
+            messageInputp.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter') { // Проверяем, нажата ли клавиша "Enter"
+                    event.preventDefault(); // Отменяем стандартное поведение (например, переход на новую строку)
+                    const message = document.getElementById('messageInputp').value;
+                    const fileInput = document.getElementById('fileInputp');
+
+                    if (fileInput.files[0]) {
+                        uploadImagep(fileInput.files[0]);
+                    } else {
+                        sendMessagep();
+                    }
+                }
+            });
+
 
             function uploadImage(file) {
                 const storageRef = storage.ref('images/' + file.name);

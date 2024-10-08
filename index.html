@@ -565,16 +565,20 @@
             //Кнопки чатов:
             globalChat.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
-                    chatArea.style.display = 'flex';
-                    pinnedChatArea.style.display = 'none';
+                    if (auth.style.display === 'none' || auth.style.display === '') {
+                        chatArea.style.display = 'flex';
+                        pinnedChatArea.style.display = 'none';
+                    }
                 }
             });
 
             pinned.addEventListener('click', () => {
                 if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
-                    chatArea.style.display = 'none';
-                    pinnedChatArea.style.display = 'flex';
-               // loadPinnedMessages(); // Загружаем сообщения для чата Избранное
+                    if (auth.style.display === 'none' || auth.style.display === '') {
+                        chatArea.style.display = 'none';
+                        pinnedChatArea.style.display = 'flex';
+                       // loadPinnedMessages(); // Загружаем сообщения для чата Избранное
+                    }
                 }
             });
             

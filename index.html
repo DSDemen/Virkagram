@@ -649,12 +649,32 @@
                 }
             });
 
+            fileInputp.addEventListener('change', () => {
+                const file = fileInputp.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        previewImagep.src = e.target.result; // Устанавливаем источник изображения для превью
+                        previewImagep.style.display = 'block'; // Показываем изображение
+                        removeImagep.style.display = 'inline'; // Показываем кнопку удаления
+                    }
+                    reader.readAsDataURL(file); // Читаем файл как Data URL
+                }
+            });
+
             // Обработчик для кнопки удаления изображения
             removeImageButton.addEventListener('click', () => {
                 fileInput.value = ''; // Сбрасываем выбранный файл
                 previewImage.src = ''; // Убираем источник изображения
                 previewImage.style.display = 'none'; // Скрываем изображение
                 removeImageButton.style.display = 'none'; // Скрываем кнопку удаления
+            });
+
+            removeImagep.addEventListener('click', () => {
+                fileInputp.value = ''; // Сбрасываем выбранный файл
+                previewImagep.src = ''; // Убираем источник изображения
+                previewImagep.style.display = 'none'; // Скрываем изображение
+                removeImagep.style.display = 'none'; // Скрываем кнопку удаления
             });
     
             // Обработчик события для кнопки меню

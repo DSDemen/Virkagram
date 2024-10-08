@@ -535,26 +535,37 @@
         const storage = firebase.storage();
         let hasDateRendered = false;
 
-        firebase.auth().onAuthStateChanged(function(user) {
-              if (user) {
+        // Проверяем состояние пользователя при каждом изменении
+        auth.onAuthStateChanged(function(user) {
+            if (user) {
+                // Если пользователь авторизован, проверяем токен для подтверждения аккаунта
                 user.getIdToken(true).then(function(idToken) {
+                    // Токен успешно получен, можно продолжить
+                    console.log('Пользователь авторизован. Токен получен.');
                 }).catch(function(error) {
-                  if (error.code === 'auth/user-disabled' || error.code === 'auth/user-not-found') {
-                    console.log('Аккаунт был удален или отключен.');
-                    alert('Аккаунт был удален или отключен.');
-                    firebase.auth().signOut().then(function() {
-                      logoutButton.click();
-                    }).catch(function(signOutError) {
-                      console.error('Ошибка при выходе из системы:', signOutError);
-                    });
-                  } else {
-                    console.error('Ошибка при проверке токена:', error);
-                  }
+                    // Ошибка при получении токена - вероятно, аккаунт был удален или заблокирован
+                    if (error.code === 'auth/user-disabled' || error.code === 'auth/user-not-found') {
+                        console.log('Аккаунт был удален или отключен.');
+                
+                        // Оповещаем пользователя
+                        alert('Аккаунт был удален или отключен.');
+                
+                        // Выходим из системы
+                        auth.signOut().then(function() {
+                            console.log('Пользователь вышел из системы.');
+                            // Вы можете выполнить редирект на страницу входа или просто обновить страницу:
+                            location.reload();  // Или, например, location.reload(); для перезагрузки
+                        }).catch(function(signOutError) {
+                            console.error('Ошибка при выходе из системы:', signOutError);
+                        });
+                    } else {
+                        console.error('Ошибка при проверке токена:', error);
+                    }
                 });
-              } else {
-                // Пользователь не авторизован, можно редиректить на страницу входа
-                console.log('Пользователь не авторизован');
-              }
+            } else {
+                // Если пользователь не авторизован
+                console.log('Пользователь не авторизован.');
+            }
         });
 
 

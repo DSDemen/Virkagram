@@ -544,7 +544,7 @@
 
         // Получаем количество зарегистрированных пользователей
         regUsersRef.once('value', (snapshot) => {
-            const regUsersCount = snapshot.numChildren(); // Количество зарегистрированных пользователей
+            const regUsersCount = snapshot.val(); // Количество зарегистрированных пользователей
 
             // Теперь слушаем изменения в количестве онлайн-пользователей
             onlineRef.on('value', (snapshot) => {

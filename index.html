@@ -785,7 +785,6 @@
                             document.getElementById('auth').style.display = 'none';
                             document.getElementById('chatArea').style.display = 'flex'; // Corrected ID
                             loadMessages();
-                            incrementOnlineCount();
                         })
                         .catch(error => {
                             alert(error.message);

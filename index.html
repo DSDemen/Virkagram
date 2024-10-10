@@ -590,7 +590,7 @@
 
 
         function checkMaintenance() {
-            db.ref('undermaint').once('value', (snapshot) => {
+            db.ref('undermaint').on('value', (snapshot) => {
                 const isUnderMaintenance = snapshot.val();
 
                 if (isUnderMaintenance) {

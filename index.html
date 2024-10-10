@@ -735,21 +735,23 @@
 
             // Обработчик события для кнопки выхода
             logoutButton.addEventListener('click', (event) => {
-                if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
+                if (document.getElementById('auth').style.display === 'none') {
+                    if (settingsArea.style.display === 'none' || settingsArea.style.display === '') {
                     
-                    event.preventDefault(); // Предотвращаем переход по ссылке
-                    auth.signOut() // Выход из аккаунта Firebase
-                        .then(() => {
-                            alert("Вы вышли из аккаунта!"); // Уведомление о выходе
-                             // Обновите интерфейс
-                            document.getElementById('auth').style.display = 'block';
-                            document.getElementById('chatArea').style.display = 'none';
-                            pinnedChatArea.style.display = 'none';
-                            decrementOnlineCount();
-                        })
-                        .catch((error) => {
-                            console.error("Ошибка выхода: ", error);
-                        });
+                        event.preventDefault(); // Предотвращаем переход по ссылке
+                        auth.signOut() // Выход из аккаунта Firebase
+                            .then(() => {
+                                alert("Вы вышли из аккаунта!"); // Уведомление о выходе
+                                 // Обновите интерфейс
+                                document.getElementById('auth').style.display = 'block';
+                                document.getElementById('chatArea').style.display = 'none';
+                                pinnedChatArea.style.display = 'none';
+                                decrementOnlineCount();
+                            })
+                            .catch((error) => {
+                                console.error("Ошибка выхода: ", error);
+                            });
+                    }
                 }
             });
 
@@ -1361,6 +1363,7 @@
                     document.getElementById('chatArea').style.display = 'flex';
                     loadMessages();
                     updateButtonText();
+                    incrementOnlineCount();
                 } else {
                     document.getElementById('auth').style.display = 'block';
                     document.getElementById('chatArea').style.display = 'none';

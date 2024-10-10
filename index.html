@@ -535,10 +535,24 @@
         const storage = firebase.storage();
         let hasDateRendered = false;
         const onlineRef = db.ref('online');
+        const regUsersRef = db.ref('users');
 
-        onlineRef.on('value', (snapshot) => {
-            const onlineCount = snapshot.val(); // Получаем текущее количество онлайн-пользователей
-            document.getElementById('onlineCount').textContent = onlineCount; // Обновляем текст на странице
+        // Функция для обновления онлайн и зарегистрированных пользователей
+        function updateOnlineAndUsersCount(onlineCount, regUsersCount) {
+            document.getElementById('onlineCount').textContent = onlineCount + "/" + regUsersCount; // Обновляем текст на странице
+        }
+
+        // Получаем количество зарегистрированных пользователей
+        regUsersRef.once('value', (snapshot) => {
+            const regUsersCount = snapshot.numChildren(); // Количество зарегистрированных пользователей
+
+            // Теперь слушаем изменения в количестве онлайн-пользователей
+            onlineRef.on('value', (snapshot) => {
+                const onlineCount = snapshot.val(); // Получаем количество онлайн-пользователей
+
+                // Обновляем счётчик с учётом зарегистрированных пользователей
+                updateOnlineAndUsersCount(onlineCount, regUsersCount);
+            });
         });
 
         // Проверяем состояние пользователя при каждом изменении

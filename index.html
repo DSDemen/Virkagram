@@ -1371,6 +1371,7 @@
 
                         messagesDiv.appendChild(messageDiv);
                     }
+                    messagesDiv.scrollTop = messagesDiv.scrollHeight;
                     const selectedTheme = document.getElementById('themeSelect').value;
                     applyTheme(selectedTheme);
                 });

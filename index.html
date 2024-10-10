@@ -728,6 +728,10 @@
                 updateButtonText(); // Обновляем текст кнопки
             });
 
+            window.addEventListener('beforeunload', () => {
+                decrementOnlineCount();
+            });
+
 
             // Обработчик события для кнопки выхода
             logoutButton.addEventListener('click', (event) => {
@@ -741,6 +745,7 @@
                             document.getElementById('auth').style.display = 'block';
                             document.getElementById('chatArea').style.display = 'none';
                             pinnedChatArea.style.display = 'none';
+                            decrementOnlineCount();
                         })
                         .catch((error) => {
                             console.error("Ошибка выхода: ", error);
@@ -753,6 +758,7 @@
             const loginBtn = document.getElementById('login');
             const sendBtn = document.getElementById('sendButton');
             const sendBtnp = document.getElementById('sendButtonp');
+            const onlineCountRef = firebase.database().ref('online');
 
             if (signupBtn) {
                 signupBtn.onclick = () => {
@@ -777,6 +783,7 @@
                             document.getElementById('auth').style.display = 'none';
                             document.getElementById('chatArea').style.display = 'flex'; // Corrected ID
                             loadMessages();
+                            incrementOnlineCount();
                         })
                         .catch(error => {
                             alert(error.message);
@@ -807,6 +814,19 @@
                         sendMessagep({ text: message });
                     }
                 };
+            }
+
+            function incrementOnlineCount() {
+                onlineCountRef.transaction((currentCount) => {
+                    return (currentCount || 0) + 1; // Увеличиваем на 1
+                });
+            }
+
+            // Функция для уменьшения счетчика
+            function decrementOnlineCount() {
+                onlineCountRef.transaction((currentCount) => {
+                    return (currentCount || 0) - 1; // Уменьшаем на 1
+                });
             }
 
             function updateButtonText() {

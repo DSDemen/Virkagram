@@ -589,20 +589,26 @@
         });
 
 
-        db.ref('undermaint').on('value', (snapshot) => {
-            const isUnderMaintenance = snapshot.val();
-           // console.log('Значение undermaint:', isUnderMaintenance); // Добавлено для отладки
+        function checkMaintenance() {
+            db.ref('undermaint').once('value', (snapshot) => {
+                const isUnderMaintenance = snapshot.val();
 
-            if (isUnderMaintenance) {
-                // Если сайт на тех. работах, показываем экран
-                document.querySelector('.maintenance-screen').style.display = 'flex';
-                console.log('Сайт на тех. работах'); // Добавлено для отладки
-            } else {
-                // Если тех. работ нет, скрываем экран и показываем сайт
-                document.querySelector('.maintenance-screen').style.display = 'none';
-                console.log('Сайт работает нормально'); // Добавлено для отладки
-            }
-        });
+                if (isUnderMaintenance) {
+                    // Если сайт на тех. работах, показываем экран
+                    document.querySelector('.maintenance-screen').style.display = 'flex';
+                    console.log('Сайт на тех. работах');
+            
+                    // Продолжаем проверку каждые 5 секунд, пока тех. работы активны
+                    setTimeout(checkMaintenance, 1000);
+                } else {
+                    // Если тех. работ нет, скрываем экран и показываем сайт
+                    document.querySelector('.maintenance-screen').style.display = 'none';
+                    console.log('Сайт работает нормально');
+                }
+            });
+        }
+
+        checkMaintenance();
         
         document.addEventListener("DOMContentLoaded", () => {
             const menuButton = document.getElementById('menuButton');

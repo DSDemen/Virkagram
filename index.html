@@ -863,9 +863,6 @@
             saveButton.addEventListener('click', () => {
                 const selectedTheme = document.getElementById('themeSelect').value;
 
-                // Применяем выбранную тему
-                applyTheme(selectedTheme);
-
                 // Сохраним выбранную тему в Local Storage
                 localStorage.setItem('theme', selectedTheme);
 
@@ -873,6 +870,7 @@
                 settingsArea.style.display = 'none';
                 chatArea.style.display = 'flex';
                 loadMessages();
+                applyTheme(selectedTheme);
             });
 
             // Загружаем тему при загрузке страницы

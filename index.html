@@ -643,9 +643,11 @@
         }
 
         checkMaintenance();
+        document.querySelector('.outofstock-screen').style.display = 'flex';
         checkURL(); 
         
         document.addEventListener("DOMContentLoaded", () => {
+            document.querySelector('.outofstock-screen').style.display = 'flex';
             const menuButton = document.getElementById('menuButton');
             const logoutButton = document.getElementById('logoutButton'); // Получаем кнопку выхода
             const fileInput = document.getElementById('fileInput');
